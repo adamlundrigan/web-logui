@@ -1,0 +1,158 @@
+pages:
+  login: 'Logga in'
+  messages: 'Meddelanden'
+  textlog: 'Textlogg'
+  statistics: 'Statistik'
+nav:
+  messages: 'Meddelanden'
+  statistics: 'Statistik'
+  signout: 'Logga ut'
+login:
+  title: 'Logga in'
+  username: 'Användarnamn'
+  password: 'Lösenord'
+  buttons:
+    signin: 'Logga in'
+index:
+  nav:
+    search:
+      input: 'Sök efter...'
+    refresh: 'Uppdatera'
+    filter: 'Skapa filter'
+    interval:
+      between: 'till'
+      option:
+        1: 'I dag'
+        2: 'Innevarande vecka'
+        3: 'Innevarande månad'
+        4: 'I år'
+        5: 'De senaste 30 dagarna'
+        6: 'De senaste 60 dagarna'
+        7: 'De senaste 6 månaderna'
+        8: 'De senaste 24 timamrna'
+    exportcsv: 'Exportera CSV'
+  error:
+    message: 'Vissa meddelanden kan vara otillgängliga för tillfället, beroende på underhåll.'
+    debug: 'Diagnostisk information'
+  table:
+    thead:
+      from: 'Från'
+      to: 'Till'
+      subject: 'Ämne'
+      status: 'Status'
+      scores: 'Poäng'
+      date: 'Datum'
+    tbody:
+      msgaction:
+        quarantine: 'Quarantine'
+        archive: 'Archive'
+        queue: 'I kö (återförsök %count%)'
+      action:
+        retry: 'Försök igen'
+        duplicate: 'Släpp dubblett'
+      mail:
+        emptysender: 'Ingen avsändare'
+    empty: 'Ingen träff'
+  paging:
+    next: 'Nästa'
+    previous: 'Föregående'
+    limit: 'rader per sida'
+  modal:
+    csv:
+      title: 'Exportera CSV'
+      paragraph: 'Välj ett eller flera fält att inkludera i CSV-filen.'
+      fields:
+        title: 'Fält'
+        checkbox:
+          action: 'Åtgärd'
+          from: 'Från'
+          to: 'Till'
+          subject: 'Ämne'
+          status: 'Status'
+          date: 'Datum'
+          scores: 'Poäng'
+      limit: 'Antal rader'
+      headers: 'Inkludera rubriker'
+      buttons:
+        close: 'Stäng'
+        export: 'Exportera'
+preview:
+  title: 'Meddelande'
+  nav:
+    back: 'Tillbaka'
+    report:
+      title: 'Spam-klassificering'
+      option:
+        fp: 'Rapportera blockerat meddelande (FP)'
+        fpfile: 'Rapportera blockerat meddelande (FP) med innehåll'
+        fn: 'Rapportera spam (FN)'
+    textlog: 'Textlogg'
+    download:
+      title: 'Ladda ner'
+      option:
+        modified: 'Modifierad'
+        original: 'Original'
+    actions:
+      title: 'Actions'
+      delete: 'Ta bort'
+      bounce: 'Studsa'
+      release: 'Släpp'
+      retry: 'Försök igen'
+      duplicate: 'Release duplicate'
+  card:
+    details:
+      title: 'Detaljer'
+      fields:
+        action: 'Åtgärd'
+        from: 'Från'
+        to: 'Till'
+        subject: 'Ämne'
+        date: 'Datum'
+        size: 'Storlek'
+        details: 'Detaljer'
+        inqueue: 'I kö (återförsök %count%)'
+        listener: 'Mottaget av'
+        server: 'Server'
+        sasl: 'Användare'
+        transport: 'Destination'
+        id: 'ID'
+    scores:
+      title: 'Poäng'
+      thead:
+        engine: 'Motor'
+        result: 'Resultat'
+        signature: 'Signatur'
+      tbody:
+        empty: 'Inga poäng'
+    metadata:
+      title: 'Metadata'
+    content:
+      state:
+        nosubject:
+          title: 'Inget ämne'
+        nopermission:
+          title: 'Dolt innehåll'
+          message: 'Behörighet saknas för att förhandsgranska innehåll'
+        unavailable:
+          title: 'Otillgängligt innehåll'
+          message: 'Meddelande är inte i kö eller karantän'
+      source:
+        original: 'Byt till <a href="%original_link%">original</a>'
+        modified: 'Byt till <a href="%modified_link%">modifierad</a>'
+      type:
+        plain: 'Byt till <a href="%text_link%">text</a>'
+        html: 'Byt till <a href="%html_link%">HTML</a>'
+      headers:
+        title: 'Meddelandehuvud'
+        added: 'Tillagd'
+        removed: 'Borttagen'
+textlog:
+  title: 'Textlogg'
+  more: 'Visa fler'
+  nav:
+    back: 'Tillbaka till detaljer'
+statistics:
+  nav:
+    target: 'Filtrera per domän...'
+    savechanges: 'Spara ändringar'
+    refresh: 'Uppdatera'

@@ -1,0 +1,140 @@
+/* Font size */
+body, p, a, button, label, .form-control, .input-group-text, .custom-select, .datepicker {
+  font-size: 0.875rem !important;
+}
+
+body {
+	padding-bottom: 20px;
+}
+
+.disabled a {
+	pointer-events: none;
+}
+
+.table-messages td {
+	padding: 0 !important;
+}
+
+.table-messages td > a {
+	padding: .75rem;
+	padding-top: .5rem;
+	padding-bottom: .5rem;
+	display: block;
+}
+
+.table p:last-child {
+	margin-bottom: 0;
+}
+
+/* .tr { display: table-row; }
+.td { display: table-cell; } */
+
+.list-group-item-heading {
+	margin-bottom: 10px;
+}
+
+.checkbox label {
+	display: block;
+}
+
+/* Give data-href-ed elements the cursor of a "real" link */
+/* [data-action], [data-bulk-action] {
+	cursor: pointer;
+} */
+
+.msg-header {
+	word-wrap: break-word;
+}
+.msg-body {
+	max-width: 100%;
+	overflow: auto;
+	background-color: #fff;
+}
+
+.msg-body-iframe {
+	width: 100%;
+	background-color: #fff;
+	border-width: 0;
+}
+
+.nowrap {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.wrap {
+	word-break: break-all;
+	overflow: hidden;
+}
+
+.not-rounded,
+.not-rounded.list-group .list-group-item {
+	border-radius: 0;
+}
+
+dd, .panel-title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+dl:last-child {
+	margin-bottom: 0;
+}
+
+.preview-headers {
+	font-family: monospace;
+	white-space: pre;
+}
+
+.preview-headers ins {
+	text-decoration: none;
+	color: #070;
+	background-color: #ddffdd;
+}
+
+.preview-headers del {
+	text-decoration: none;
+	color: #c00;
+	background-color: #ffdddd;
+}
+
+.preview-headers-legend {
+	margin-top: 1px;
+}
+
+.preview-headers-legend div {
+	float: left;
+	width: 12px;
+	height: 12px;
+	margin-top: 4px;
+	margin-right: 4px;
+}
+
+.preview-headers-legend p {
+	float: left;
+	margin: 0px;
+	padding: 0px;
+	margin-right: 10px;
+	font-family: monospace;
+}
+
+.preview-details dt {
+	margin-bottom: 0.25rem
+}
+
+.preview-details dd {
+	margin-bottom: 0;
+}
+
+.table-fixed {
+	table-layout: fixed;
+}
+
+.table-fixed td {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+tr.item, td.item, tr.toggle, td.toggle, #link-add {
+	cursor: pointer;
+}

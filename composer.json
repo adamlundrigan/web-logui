@@ -1,0 +1,21 @@
+{
+	"require": {
+		"ezyang/htmlpurifier": "4.11.*",
+		"components/font-awesome": "5.9.*",
+		"twbs/bootstrap": "^4.3",
+		"ext-json": "*",
+		"elasticsearch/elasticsearch": "^7.0",
+		"components/jquery": "^3.3",
+		"ongr/elasticsearch-dsl": "^7.0",
+		"twig/twig": "^2.12",
+		"symfony/yaml": "^4.3",
+		"symfony/translation": "^4.3",
+		"symfony/twig-bridge": "^4.3",
+		"components/jqueryui": "^1.12",
+		"zbateson/mail-mime-parser": "^1.2"
+	},
+	"suggest": {
+		"ext-curl": "Elasticsearch-PHP",
+		"ext-pdo-sqlite": "Needed to access a SQLite database file"
+	}
+}

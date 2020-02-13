@@ -1,0 +1,24 @@
+<div class="input-daterange input-group" id="datepicker">
+  <div class="input-group-prepend">
+    <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+  </div>
+  <input type="text" class="form-control" size="10" id="indexstart" name="start" value="{{ index_start }}">
+  <div class="input-group-append">
+    <span class="input-group-text">{% trans %}index.nav.interval.between{% endtrans %}</span>
+  </div>
+  <input type="text" class="form-control" size="10" id="indexend" name="stop" value="{{ index_stop }}">
+  <div class="input-group-append">
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"></button>
+    <div id="shortcut_range" class="dropdown-menu dropdown-menu-right" role="menu">
+      <a class="dropdown-item" href="#" data-range="1d">{% trans %}index.nav.interval.option.1{% endtrans %}</a>
+      <a class="dropdown-item" href="#" data-range="1w">{% trans %}index.nav.interval.option.2{% endtrans %}</a>
+      <a class="dropdown-item" href="#" data-range="1m">{% trans %}index.nav.interval.option.3{% endtrans %}</a>
+      <a class="dropdown-item" href="#" data-range="1y">{% trans %}index.nav.interval.option.4{% endtrans %}</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="#" data-range="24h">{% trans %}index.nav.interval.option.8{% endtrans %}</a>
+      <a class="dropdown-item" href="#" data-range="30d">{% trans %}index.nav.interval.option.5{% endtrans %}</a>
+      <a class="dropdown-item" href="#" data-range="60d">{% trans %}index.nav.interval.option.6{% endtrans %}</a>
+      <a class="dropdown-item" href="#" data-range="6m">{% trans %}index.nav.interval.option.7{% endtrans %}</a>
+    </div>
+  </div>
+</div>

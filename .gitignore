@@ -1,0 +1,14 @@
+*.log
+*.tmp
+._*
+
+.vagrant
+.vscode
+
+/settings.php
+/settings-stats.php
+
+vendor/
+
+# PHPStorm settings
+.idea

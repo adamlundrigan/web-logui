@@ -1,0 +1,39 @@
+{% extends 'base.twig' %}
+
+{% block title %}
+  {% trans %}pages.textlog{% endtrans %}
+{% endblock %}
+
+{% block nav %}
+  {% if authenticated and not navbar_hide %}
+    {{ parent() }}
+  {%  endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ parent() }}
+{% endblock %}
+
+{% block body %}
+  <nav class="navbar navbar-expand navbar-light bg-light navbar-toolbar">
+    <ul class="nav navbar-nav">
+      <li class="nav-item ">
+        <a class="nav-link" href="?page=preview&{{ preview_link }}"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;{% trans %}textlog.nav.back{% endtrans %}</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container-fluid mt-3">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{% trans %}textlog.title{% endtrans %}</h5>
+        {% for entry in textlog  %}
+          <p class="m-0 text-monospace" style="font-size: 0.75rem !important">{{ entry.message }}</p>
+        {% endfor %}
+        {% if more %}
+          <p class="m-0 pt-3 text-center"><a href="?page=log&{{ more_link }}">{% trans %}textlog.more{% endtrans %}&hellip;</a></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

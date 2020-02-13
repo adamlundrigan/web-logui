@@ -1,0 +1,60 @@
+{% extends 'base.twig' %}
+
+{% block title %}
+  {% trans %}pages.login{% endtrans %}
+{% endblock %}
+
+{% block nav %}{% endblock %}
+
+{% block head %}
+  {{ parent() }}
+{%  endblock %}
+
+{% block scripts %}
+  {{ parent() }}
+  <script src="static/js/moment.js"></script>
+{% endblock %}
+
+{% block body %}
+  <div class="container-fluid">
+    <div class="mx-auto mt-5 col-md-7 col-lg-5 col-xl-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{% trans %}login.title{% endtrans %}</h5>
+          {% if error %}
+            <div class="alert alert-danger alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+            </div>
+          {% endif %}
+          {% if login_text %}
+            <p class="text-muted">{{ login_text }}</p><hr>
+          {% endif %}
+          <form method="post" action="?page=login">
+            <input type="hidden" name="query" id="query" value="{{ query }}">
+            <input type="hidden" name="timezone" id="timezone">
+            <input type="hidden" name="timezone_utc" id="timezone_utc">
+            <input type="hidden" name="useiframe" id="useiframe">
+            <div class="form-group">
+              <label for="username">{% trans %}login.username{% endtrans %}</label>
+              <input type="text" class="form-control" name="username" id="username" required autofocus="autofocus">
+            </div>
+            <div class="form-group">
+              <label for="username">{% trans %}login.password{% endtrans %}</label>
+              <input type="password" class="form-control" name="password" required id="password">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i>&nbsp;{% trans %}login.buttons.signin{% endtrans %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    $("#timezone").val(new Date().getTimezoneOffset());
+    $('#timezone_utc').val(moment().format('Z z'));
+
+    if ($("<iframe>").prop("sandbox") !== undefined && $("<iframe>").prop("srcdoc") !== undefined) {
+      $("#useiframe").val(true);
+    }
+  </script>
+{% endblock %}

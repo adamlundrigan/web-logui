@@ -1,0 +1,158 @@
+pages:
+  login: 'Sign in'
+  messages: 'Messages'
+  textlog: 'Text log'
+  statistics: 'Statistics'
+nav:
+  messages: 'Messages'
+  statistics: 'Statistics'
+  signout: 'Sign out'
+login:
+  title: 'Sign in'
+  username: 'Username'
+  password: 'Password'
+  buttons:
+    signin: 'Sign in'
+index:
+  nav:
+    search:
+      input: 'Search for...'
+    refresh: 'Refresh'
+    filter: 'Add filter'
+    interval:
+      between: 'to'
+      option:
+        1: 'Today'
+        2: 'This week'
+        3: 'This month'
+        4: 'This year'
+        5: 'Last 30 days'
+        6: 'Last 60 days'
+        7: 'Last 6 months'
+        8: 'Last 24 hours'
+    exportcsv: 'Export CSV'
+  error:
+    message: 'Some messages might not be available at the moment due to maintenance.'
+    debug: 'Diagnostic information'
+  table:
+    thead:
+      from: 'From'
+      to: 'To'
+      subject: 'Subject'
+      status: 'Status'
+      scores: 'Scores'
+      date: 'Date'
+    tbody:
+      msgaction:
+        quarantine: 'Quarantine'
+        archive: 'Archive'
+        queue: 'In queue (retry %count%)'
+      action:
+        retry: 'Release/retry'
+        duplicate: 'Release duplicate'
+      mail:
+        emptysender: 'Empty sender'
+    empty: 'No matches'
+  paging:
+    next: 'Next'
+    previous: 'Previous'
+    limit: 'results per page'
+  modal:
+    csv:
+      title: 'Export CSV'
+      paragraph: 'Choose one or more fields to include in the CSV-file.'
+      fields:
+        title: 'Fields'
+        checkbox:
+          action: 'Action'
+          from: 'From'
+          to: 'To'
+          subject: 'Subject'
+          status: 'Status'
+          date: 'Date'
+          scores: 'Scores'
+      limit: 'Items to export'
+      headers: 'Include column headers'
+      buttons:
+        close: 'Close'
+        export: 'Export'
+preview:
+  title: 'Message'
+  nav:
+    back: 'Back'
+    report:
+      title: 'Spam classification'
+      option:
+        fp: 'Report blocked email (FP)'
+        fpfile: 'Report blocked email (FP) with email body'
+        fn: 'Report spam (FN)'
+    textlog: 'Text log'
+    download:
+      title: 'Download'
+      option:
+        modified: 'Modified'
+        original: 'Original'
+    actions:
+      title: 'Actions'
+      delete: 'Delete'
+      bounce: 'Bounce'
+      release: 'Release'
+      retry: 'Retry'
+      duplicate: 'Release duplicate'
+  card:
+    details:
+      title: 'Details'
+      fields:
+        action: 'Action'
+        from: 'From'
+        to: 'To'
+        subject: 'Subject'
+        date: 'Date'
+        size: 'Size'
+        details: 'Details'
+        inqueue: 'In queue (retry %count%)'
+        listener: 'Received by'
+        server: 'Server'
+        sasl: 'User'
+        transport: 'Destination'
+        id: 'ID'
+    scores:
+      title: 'Scores'
+      thead:
+        engine: 'Engine'
+        result: 'Result'
+        signature: 'Signature'
+      tbody:
+        empty: 'No scores'
+    metadata:
+      title: 'Metadata'
+    content:
+      state:
+        nosubject:
+          title: 'No subject'
+        nopermission:
+          title: 'Content hidden'
+          message: 'You don''t have permission to preview content'
+        unavailable:
+          title: 'Content unavailable'
+          message: 'Message is not in queue or quarantine'
+      source:
+        original: 'Show <a href="%original_link%">original</a>'
+        modified: 'Show <a href="%modified_link%">modified</a>'
+      type:
+        plain: 'Switch to <a href="%text_link%">plain text</a>'
+        html: 'Switch to <a href="%html_link%">HTML</a> version'
+      headers:
+        title: 'Headers'
+        added: 'Added'
+        removed: 'Removed'
+textlog:
+  title: 'Text log'
+  more: 'More'
+  nav:
+    back: 'Back to preview'
+statistics:
+  nav:
+    target: 'Filter by domain...'
+    savechanges: 'Save changes'
+    refresh: 'Refresh'

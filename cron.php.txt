@@ -1,0 +1,8 @@
+<?php
+
+if (!isset($_SERVER['argc']))
+  die('this file can only be run from command line');
+
+define('BASE', dirname(__FILE__));
+
+if ($argv[1] == 'pending') require_once BASE.'/cron/pending.actions.php';
