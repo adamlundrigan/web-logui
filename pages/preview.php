@@ -233,7 +233,6 @@ $twigLocals = [
   'body'								=> $body ?: null,
   'encode'							=> $encode ?: null,
   'show_text'						=> $_GET['preview'] == 'text',
-  'use_iframe'					=> $_SESSION['useiframe'],
   'mail'								=> $mail,
   'scores'							=> history_parse_scores($mail) ?: null,
   'pending_action_type' => $pending_action_type,

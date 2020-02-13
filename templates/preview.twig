@@ -193,18 +193,14 @@
               {% elseif encode == 'TEXT' %}
                 <pre class="card-text msg-body">{{ body }}</pre>
               {% elseif encode == 'HTML' or encode == 'ERROR' %}
-                {% if use_iframe == true %}
-                  <iframe id="preview-html" sandbox srcdoc="{{ body }}" class="panel-body msg-body-iframe"></iframe>
-                  <script>
-                    var updateSize = function() {
-                      $("#preview-html").css("height", $(window).height() * 0.4);
-                    }
-                    $(updateSize);
-                    $(window).resize(updateSize);
-                  </script>
-                {% else %}
-                  <div class="card-text msg-body">{{ body }}</div>
-                {% endif %}
+                <iframe id="preview-html" sandbox srcdoc="{{ body }}" class="panel-body msg-body-iframe"></iframe>
+                <script>
+                  var updateSize = function() {
+                    $("#preview-html").css("height", $(window).height() * 0.4);
+                  }
+                  $(updateSize);
+                  $(window).resize(updateSize);
+                </script>
               {% endif %}
               {% if attachments %}
               <div class="card-footer">

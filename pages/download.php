@@ -49,7 +49,7 @@ try {
     throw new RestException(404, 'Not found');
 
   require_once 'inc/eml.php';
-  header('Content-Disposition: attachment; filename='.$filename.'.txt');
+  header('Content-Disposition: attachment; filename='.$filename.'.eml');
   eml_download($client, $response->body->items[0]->hqfpath, $actionid, $_GET['original'] == '1', false);
 } catch (RestException $e) {
   echo "Error: ".$e->getMessage();

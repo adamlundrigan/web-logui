@@ -34,7 +34,6 @@
             <input type="hidden" name="query" id="query" value="{{ query }}">
             <input type="hidden" name="timezone" id="timezone">
             <input type="hidden" name="timezone_utc" id="timezone_utc">
-            <input type="hidden" name="useiframe" id="useiframe">
             <div class="form-group">
               <label for="username">{% trans %}login.username{% endtrans %}</label>
               <input type="text" class="form-control" name="username" id="username" required autofocus="autofocus">
@@ -52,9 +51,5 @@
   <script>
     $("#timezone").val(new Date().getTimezoneOffset());
     $('#timezone_utc').val(moment().format('Z z'));
-
-    if ($("<iframe>").prop("sandbox") !== undefined && $("<iframe>").prop("srcdoc") !== undefined) {
-      $("#useiframe").val(true);
-    }
   </script>
 {% endblock %}

@@ -10,7 +10,6 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 
   $_SESSION['timezone'] = $_POST['timezone'];
   $_SESSION['timezone_utc'] = $_POST['timezone_utc'];
-  $_SESSION['useiframe'] = $_POST['useiframe'];
   $username = $_POST['username'];
   $password = $_POST['password'];
 
