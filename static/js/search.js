@@ -3,33 +3,6 @@ $(document).ready(function() {
 
   var fields = [
     {
-      label: 'Message ID',
-      name: 'messageid',
-      operator: ['exact', 'not']
-    },
-    {
-      label: 'Remote IP',
-      name: 'remoteip',
-      operator: ['exact', 'not']
-    },
-    {
-      label: 'Action',
-      name: 'action',
-      operator: ['exact', 'not'],
-      type: 'select',
-      options: [
-        'DELIVER',
-        'QUEUE',
-        'QUARANTINE',
-        'ARCHIVE',
-        'REJECT',
-        'DELETE',
-        'BOUNCE',
-        'ERROR',
-        'DEFER'
-      ]
-    },
-    {
       label: 'From',
       name: 'from',
       operator: ['exact', 'contains', 'not']
@@ -48,6 +21,33 @@ $(document).ready(function() {
       label: 'Status',
       name: 'status',
       operator: ['exact', 'contains', 'not']
+    },
+    {
+      label: 'Remote IP',
+      name: 'remoteip',
+      operator: ['exact', 'not']
+    },
+    {
+      label: 'Message ID',
+      name: 'messageid',
+      operator: ['exact', 'not']
+    },
+    {
+      label: 'Action',
+      name: 'action',
+      operator: ['exact', 'not'],
+      type: 'select',
+      options: [
+        'DELIVER',
+        'QUEUE',
+        'QUARANTINE',
+        'ARCHIVE',
+        'REJECT',
+        'DELETE',
+        'BOUNCE',
+        'ERROR',
+        'DEFER'
+      ]
     },
     {
       label: 'Metadata',
