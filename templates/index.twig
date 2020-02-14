@@ -101,7 +101,7 @@
 </nav>
 {% endif %}
 
-<div class="container-fluid p-0 pt-3">
+<div class="container-fluid p-0 p-md-3 pt-3">
   {% if errors %}
   <p class="text-muted">
     {% trans %}index.error.message{% endtrans %}
@@ -127,7 +127,7 @@
   <table class="table table-messages table-hover d-none d-md-table">
     <thead>
       <tr>
-        <th style="width:60px"></th>
+        <th style="width: 45px"></th>
         <th>{% trans %}index.table.thead.from{% endtrans %}</th>
         {% if mailhasmultipleaddresses %}<th>{% trans %}index.table.thead.to{% endtrans %}</th>{% endif %}
         <th>{% trans %}index.table.thead.subject{% endtrans %}</th>
@@ -140,11 +140,10 @@
     <tbody>
       {% for mail in mails %}
       <tr>
-        <td class="text-right nopad">
+        <td class="nopad">
           <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-            <span class="fa-stack" style="font-size: 12px;" title="{{ mail.doc.queue.action ?? mail.doc.msgaction }}">
-              <i class="fa fa-square fa-stack-2x" style="color: {{ mail.action_color }};"></i>
-              <i class="{{ mail.action_icon }} fa-lg fa-stack-1x" style="color:#fff;"></i>
+            <span class="badge" style="background-color: {{ mail.action_color }}; color: #fff; width: 17px" title="{{ mail.doc.queue.action ?? mail.doc.msgaction }}">
+              {{ mail.action_text }}
             </span>
           </a>
         </td>
@@ -244,6 +243,9 @@
     <ul class="nav d-flex justify-content-between px-4">
       <li class="nav-item"><button type="button" class="btn btn-sm {% if not prev_button %}btn-outline-secondary{% else %}btn-outline-primary{% endif %}" {% if not prev_button %}disabled{% endif %} href="#" onclick="history.go(-1); return false;"><i class="fas fa-chevron-left fa-sm"></i> {% trans %}index.paging.previous{% endtrans %}</a></li>
       <li class="nav-item d-inline-flex">
+        {% if not filters is empty or not search is empty %}
+          <span class="p-1 text-muted d-none d-md-inline">{% trans with {'%count%': mails_count } %}index.paging.totalcount{% endtrans %}</span>
+        {% endif %}
         <ul class="pagination pagination-sm">
           {% for pagesize in pagesizes %}
             <li class="page-item {% if size==pagesize %} active{% endif %}">
@@ -275,86 +277,6 @@
     </p>
   </p>
   {% endif %}
-</div>
-
-<div class="modal fade" id="querybuilder">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{% trans %}index.modal.builder.title{% endtrans %}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="query">
-        <p>{% trans %}index.modal.builder.paragraph{% endtrans %}</p>
-        <form class="form-horizontal">
-          {% if not source == 'queue' and not source == 'quarantine' %}
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.action{% endtrans %}</label>
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.type.is{% endtrans %}</label>
-            <div class="col-sm-8"><select class="form-control" id="query_action">
-              <option></option>
-              <option>QUARANTINE</option>
-              <option>DELIVER</option>
-              <option>DELETE</option>
-              <option>REJECT</option>
-              <option>DEFER</option>
-              <option>ERROR</option>
-              <option>BOUNCE</option>
-              <option>QUEUE</option>
-            </select></div>
-          </div>
-          {% endif %}
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.date{% endtrans %}</label>
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.type.between{% endtrans %}</label>
-            <div class="col-sm-8"><input type="datetime-local" class="form-control" id="query_date_1" placeholder="yyyy/mm/dd hh:mm:ss"></div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label"></label>
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.type.and{% endtrans %}</label>
-            <div class="col-sm-8"><input type="datetime-local" class="form-control" id="query_date_2" placeholder="yyyy/mm/dd hh:mm:ss"></div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.id{% endtrans %}</label>
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.type.is{% endtrans %}</label>
-            <div class="col-sm-8"><input type="text" class="form-control" id="query_mid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.from{% endtrans %}</label>
-            <div class="col-sm-2"><select class="form-control" id="query_from_op"><option value="=">{% trans %}index.modal.builder.form.type.is{% endtrans %}</option><option value="~">{% trans %}index.modal.builder.form.type.contains{% endtrans %}</option></select></div>
-            <div class="col-sm-8"><input type="email" class="form-control" id="query_from" placeholder="user@example.com"></div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.to{% endtrans %}</label>
-            <div class="col-sm-2"><select class="form-control" id="query_to_op"><option value="=">{% trans %}index.modal.builder.form.type.is{% endtrans %}</option><option value="~">{% trans %}index.modal.builder.form.type.contains{% endtrans %}}</option></select></div>
-            <div class="col-sm-8"><input type="email" class="form-control" id="query_to" placeholder="user@example.com"></div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.ip{% endtrans %}</label>
-            <div class="col-sm-2"><select class="form-control" id="query_ip_op"><option value="=">{% trans %}index.modal.builder.form.type.is{% endtrans %}</option><option value="~">{% trans %}index.modal.builder.form.type.contains{% endtrans %}</option></select></div>
-            <div class="col-sm-8"><input type="text" class="form-control" id="query_ip" placeholder="0.0.0.0"></div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.username{% endtrans %}</label>
-            <div class="col-sm-2"><select class="form-control" id="query_sasl_op"><option value="=">{% trans %}index.modal.builder.form.type.is{% endtrans %}</option><option value="~">{% trans %}index.modal.builder.form.type.contains{% endtrans %}</option></select></div>
-            <div class="col-sm-8"><input type="text" class="form-control" id="query_sasl" placeholder=""></div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">{% trans %}index.modal.builder.form.subject{% endtrans %}</label>
-            <div class="col-sm-2"><select class="form-control" id="query_subject_op"><option value="~" selected>{% trans %}index.modal.builder.form.type.contains{% endtrans %}</option><option value="=">{% trans %}index.modal.builder.form.type.is{% endtrans %}</option></select></div>
-            <div class="col-sm-8"><input type="text" class="form-control" id="query_subject" placeholder=""></div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left" id="btn_query_clear"><i class="fa fa-times"></i>&nbsp;{% trans %}index.modal.builder.buttons.clear{% endtrans %}</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans %}index.modal.builder.buttons.close{% endtrans %}</button>
-        <button type="button" class="btn btn-primary" onclick="$('#dosearch').click()"><i class="fa fa-search"></i>&nbsp;{% trans %}index.modal.builder.buttons.search{% endtrans %}</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <div class="modal fade" id="exportbuilder">

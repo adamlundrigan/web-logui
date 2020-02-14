@@ -146,27 +146,15 @@ if (isset($mail->serialno) && in_array($msgaction, ['QUEUE', 'QUARANTINE'])) {
 }
 
 $action_colors = array(
-  'DELIVER' => '#8c1',
-  'QUEUE' => '#1ad',
-  'QUARANTINE' => '#f70',
+  'DELIVER' => '#5cb85c',
+  'QUEUE' => '#00aeef',
+  'QUARANTINE' => '#f0ad4e',
   'ARCHIVE' => '#b8b8b8',
-  'REJECT' => '#ba0f4b',
-  'DELETE' => '#333',
-  'BOUNCE' => '#333',
-  'ERROR' => '#333',
-  'DEFER' => '#b5b',
-);
-
-$action_icons = array(
-  'DELIVER' => 'fa fa-check',
-  'QUEUE' => 'fa fa-exchange-alt',
-  'QUARANTINE' => 'fa fa-inbox',
-  'ARCHIVE' => 'fa fa-inbox',
-  'REJECT' => 'fa fa-ban',
-  'DELETE' => 'fa fa-trash-alt',
-  'BOUNCE' => 'fa fa-reply',
-  'ERROR' => 'fa fa-exclamation',
-  'DEFER' => 'far fa-clock',
+  'REJECT' => '#d9534f',
+  'DELETE' => '#000',
+  'BOUNCE' => '#000',
+  'ERROR' => '#000',
+  'DEFER' => '#e83e8c',
 );
 
 // geoip
@@ -247,6 +235,7 @@ $twigLocals = [
   'referer'							=> $_POST['referer'] ?: $_SERVER['HTTP_REFERER'],
   'action_color'				=> $action_colors[$msgaction],
   'action_icon'					=> $action_icons[$msgaction],
+  'action_text'         => substr($mail->queue['action'] ?? $mail->msgaction, 0, 1),
   'action_colors'				=> $action_colors,
   'action_icons'				=> $action_icons,
   'disabled_features'		=> Session::Get()->getDisabledFeatures(),

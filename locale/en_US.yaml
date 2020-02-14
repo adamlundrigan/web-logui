@@ -57,6 +57,7 @@ index:
     next: 'Next'
     previous: 'Previous'
     limit: 'results per page'
+    totalcount: '%count% matches'
   modal:
     csv:
       title: 'Export CSV'

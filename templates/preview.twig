@@ -74,11 +74,9 @@
           <div class="card-body">
             <dl class="preview-details row">
               <dt class="col-sm-3">{% trans %}preview.card.details.fields.action{% endtrans %}</dt><dd class="col-sm-9">
-                <span class="fa-stack" style="font-size: 10px;">
-                  <i class="fa fa-square fa-stack-2x" style="color: {{ action_color }};"></i>
-                  <i class="{{ action_icon }} fa-lg fa-stack-1x" style="color:#fff;"></i>
+                <span class="badge" style="background-color: {{ action_color }}; color: #fff" title="{{ mail.queue.action ?? mail.msgaction }}">
+                  {{ msg_action }}
                 </span>
-                {{ msg_action }}
               </dd>
               <dt class="col-sm-3">{% trans %}preview.card.details.fields.from{% endtrans %}</dt><dd class="col-sm-9 wrap">{{ mail.msgfrom }}</dd>
               <dt class="col-sm-3">{% trans %}preview.card.details.fields.to{% endtrans %}</dt><dd class="col-sm-9 wrap">{{ mail.msgto }}</dd>

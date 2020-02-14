@@ -57,6 +57,7 @@ index:
     next: 'Nästa'
     previous: 'Föregående'
     limit: 'rader per sida'
+    totalcount: '%count% matchningar'
   modal:
     csv:
       title: 'Exportera CSV'

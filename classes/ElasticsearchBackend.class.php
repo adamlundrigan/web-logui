@@ -183,7 +183,7 @@ class ElasticsearchBackend extends Backend
         foreach ($response['hits']['hits'] as $m)
           $results[] = es_document_parser($m, $settings->getElasticsearchMappings(), $settings->getElasticsearchMetadataFilter());
 
-      return $results;
+      return ['items' => $results, 'total' => $response['hits']['total']['value'] ?? 0];
     } catch (Exception $e) {
       $errors[] = "Exception code: ".$e->getMessage();
       return [];

@@ -7,15 +7,15 @@ if (isset($_POST['delete']) || isset($_POST['bounce']) || isset($_POST['retry'])
 }
 
 $action_colors = array(
-  'DELIVER' => '#8c1',
-  'QUEUE' => '#1ad',
-  'QUARANTINE' => '#f70',
+  'DELIVER' => '#5cb85c',
+  'QUEUE' => '#00aeef',
+  'QUARANTINE' => '#f0ad4e',
   'ARCHIVE' => '#b8b8b8',
-  'REJECT' => '#ba0f4b',
-  'DELETE' => '#333',
-  'BOUNCE' => '#333',
-  'ERROR' => '#333',
-  'DEFER' => '#b5b',
+  'REJECT' => '#d9534f',
+  'DELETE' => '#000',
+  'BOUNCE' => '#000',
+  'ERROR' => '#000',
+  'DEFER' => '#e83e8c',
 );
 
 $action_icons = array(
@@ -104,7 +104,10 @@ if (isset($_POST['filter-field']) && isset($_POST['filter-operator']) && isset($
 if (isset($_SESSION['filters']))
   $param['filters'] = $_SESSION['filters'];
 
-$results = $esBackend->loadMailHistory($search, $size, $param, $errors);
+$mailHistory = $esBackend->loadMailHistory($search, $size, $param, $errors);
+
+$results = $mailHistory['items'];
+$total_count = $mailHistory['total'];
 if (!$results)
   $results = [];
 
@@ -137,6 +140,7 @@ foreach ($results as $m) {
   $mail['preview'] = $preview;
   $mail['previewlink'] = get_preview_link($m, ['index' => $m['index']]);
   $mail['action_icon'] = $action_icons[$m['doc']->queue['action'] ?? $m['doc']->msgaction];
+  $mail['action_text'] = substr($m['doc']->queue['action'] ?? $m['doc']->msgaction, 0, 1);
   $mail['action_color'] = $action_colors[$m['doc']->queue['action'] ?? $m['doc']->msgaction];
   if ($settings->getDisplayScores()) {
     $printscores = array();
@@ -235,6 +239,7 @@ $twigLocals = [
   'index_start'               => $index_start,
   'index_stop'                => $index_stop,
   'mails'                     => $mails,
+  'mails_count'               => $total_count,
   'prev_button'               => $prev_button,
   'next_button'               => $next_button,
   'pagesizes'                 => $pagesize,
