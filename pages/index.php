@@ -241,7 +241,8 @@ $twigLocals = [
   'paging'                    => $paging,
   'filters'                   => $_SESSION['filters'] ?? [],
   'sortby'                    => $param['sort'],
-  'sortorder'                 => $param['sortorder']
+  'sortorder'                 => $param['sortorder'],
+  'table_columns'             => $settings->getDisplayIndexColumns()
 ];
 
 echo $twig->render('index.twig', $twigGlobals + $twigLocals);

@@ -29,6 +29,7 @@ class Settings
   private $displayStats = false;
   private $displayListener = array('mailserver:inbound' => "Inbound");
   private $displayTransport = array('mailtransport:outbound' => "Internet");
+  private $displayIndexColumns = ['action', 'from', 'to', 'subject', 'status', 'scores', 'date'];
 
   private $geoIP = false;
   private $geoIPDatabase = null;
@@ -129,6 +130,7 @@ class Settings
     $this->extract($this->displayStats, 'display-stats');
     $this->extract($this->displayListener, 'display-listener');
     $this->extract($this->displayTransport, 'display-transport');
+    $this->extract($this->displayIndexColumns, 'display-index-columns');
     $this->extract($this->authSources, 'authentication');
     $this->extract($this->sessionName, 'session-name');
     $this->extract($this->geoIP, 'geoip');
@@ -381,6 +383,14 @@ class Settings
   public function getDisplayTransport()
   {
     return $this->displayTransport;
+  }
+
+  /**
+   * Get index columns order
+   */
+  public function getDisplayIndexColumns()
+  {
+    return $this->displayIndexColumns;
   }
 
   /**

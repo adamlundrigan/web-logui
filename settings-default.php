@@ -45,6 +45,7 @@
 //$settings['display-stats'] = false;
 //$settings['display-listener']['mailserver:inbound'] = 'Inbound';
 //$settings['display-transport']['mailtransport:outbound'] = 'Internet';
+//$settings['display-index-columns'] = ['action', 'from', 'to', 'subject', 'status', 'scores', 'date'];
 
 /*
  * Elasticsearch settings

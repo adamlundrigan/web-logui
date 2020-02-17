@@ -134,122 +134,139 @@
           set link_sort = '?page=index&start=' ~ index_start ~ '&stop=' ~ index_stop ~ '&size=' ~ size
         %}
         <tr>
-          <th style="width: 45px"></th>
-          <th>
-            <a href="{{link_sort}}&sort=from" class="text-dark">{% trans %}index.table.thead.from{% endtrans %}</a>
-            {% if sortby == 'from' %}
-              {% if sortorder == 'DESC' %}
-                <a href="{{link_sort}}&sort=from&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
-              {% else %}
-                <a href="{{link_sort}}&sort=from&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+          {% for column in table_columns %}
+            {% if column == 'action' %}
+              <th style="width: 45px"></th>
+            {% elseif column == 'from' %}
+              <th>
+                <a href="{{link_sort}}&sort=from" class="text-dark">{% trans %}index.table.thead.from{% endtrans %}</a>
+                {% if sortby == 'from' %}
+                  {% if sortorder == 'DESC' %}
+                    <a href="{{link_sort}}&sort=from&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
+                  {% else %}
+                    <a href="{{link_sort}}&sort=from&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+                  {% endif %}
+                {% endif %}
+              </th>
+            {% elseif column == 'to' %}
+              {% if mailhasmultipleaddresses %}
+                <th>
+                  <a href="{{link_sort}}&sort=to" class="text-dark">{% trans %}index.table.thead.to{% endtrans %}</a>
+                  {% if sortby == 'to' %}
+                    {% if sortorder == 'DESC' %}
+                      <a href="{{link_sort}}&sort=to&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
+                    {% else %}
+                      <a href="{{link_sort}}&sort=to&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+                    {% endif %}
+                  {% endif %}
+                </th>
               {% endif %}
+            {% elseif column == 'subject' %}
+              <th>
+                <a href="{{link_sort}}&sort=subject" class="text-dark">
+                  {% trans %}index.table.thead.subject{% endtrans %}
+                  {% if sortby == 'subject' %}
+                    {% if sortorder == 'DESC' %}
+                      <a href="{{link_sort}}&sort=subject&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
+                    {% else %}
+                      <a href="{{link_sort}}&sort=subject&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+                    {% endif %}
+                  {% endif %}
+                </a>
+              </th>
+            {% elseif column == 'status' %}
+              <th class="d-none d-lg-table-cell text-dark">{% trans %}index.table.thead.status{% endtrans %}</th>
+            {% elseif column == 'scores' %}
+              {% if feature_scores %}
+                <th class="d-none d-lg-table-cell text-dark" style="width: 120px;">{% trans %}index.table.thead.scores{% endtrans %}</th>
+              {% endif %}
+            {% elseif column == 'date' %}
+              <th>
+                <a href="{{link_sort}}&sort=date" class="text-dark">
+                  {% trans %}index.table.thead.date{% endtrans %}
+                  {% if sortby == 'date' %}
+                    {% if sortorder == 'DESC' %}
+                      <a href="{{link_sort}}&sort=date&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
+                    {% else %}
+                      <a href="{{link_sort}}&sort=date&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+                    {% endif %}
+                  {% endif %}
+                </a>
+              </th>
             {% endif %}
-          </th>
-          {% if mailhasmultipleaddresses %}
-            <th>
-              <a href="{{link_sort}}&sort=to" class="text-dark">{% trans %}index.table.thead.to{% endtrans %}</a>
-              {% if sortby == 'to' %}
-                {% if sortorder == 'DESC' %}
-                  <a href="{{link_sort}}&sort=to&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
-                {% else %}
-                  <a href="{{link_sort}}&sort=to&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
-                {% endif %}
-              {% endif %}
-            </th>
-          {% endif %}
-          <th>
-            <a href="{{link_sort}}&sort=subject" class="text-dark">
-              {% trans %}index.table.thead.subject{% endtrans %}
-              {% if sortby == 'subject' %}
-                {% if sortorder == 'DESC' %}
-                  <a href="{{link_sort}}&sort=subject&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
-                {% else %}
-                  <a href="{{link_sort}}&sort=subject&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
-                {% endif %}
-              {% endif %}
-            </a>
-          </th>
-          <th class="d-none d-lg-table-cell text-dark">{% trans %}index.table.thead.status{% endtrans %}</th>
-          {% if feature_scores %}<th class="d-none d-lg-table-cell text-dark" style="width: 120px;">{% trans %}index.table.thead.scores{% endtrans %}</th>{% endif %}
-          <th>
-            <a href="{{link_sort}}&sort=date" class="text-dark">
-              {% trans %}index.table.thead.date{% endtrans %}
-              {% if sortby == 'date' %}
-                {% if sortorder == 'DESC' %}
-                  <a href="{{link_sort}}&sort=date&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
-                {% else %}
-                  <a href="{{link_sort}}&sort=date&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
-                {% endif %}
-              {% endif %}
-            </a>
-          </th>
-          <th style="width: 25px;" class="d-none d-lg-table-cell"></th>
+          {% endfor %}
         </tr>
       </thead>
       <tbody>
         {% for mail in mails %}
         <tr>
-          <td class="nopad">
-            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-              <span class="badge" style="background-color: {{ mail.action_color }}; color: #fff; width: 17px" title="{{ mail.doc.queue.action ?? mail.doc.msgaction }}">
-                {{ mail.action_text }}
-              </span>
-            </a>
-          </td>
-          <td>
-            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-              {{ mail.doc.msgfrom }}
-            </a>
-          </td>
-          {% if mailhasmultipleaddresses %}
-            <td>
-              <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-                {{ mail.doc.msgto }}
-              </a>
-            </td>
-          {% endif %}
-          <td>
-            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-              {{ mail.doc.msgsubject }}
-            </a>
-          </td>
-          <td class="d-none d-lg-table-cell">
-            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-              <span title="{{ mail.description }}">
-                {% if mail.doc.queue.action %}
-                  {{ mail.doc.queue.errormsg }}
-                {% elseif mail.doc.msgaction == 'QUARANTINE' %}
-                  {% trans %}index.table.tbody.msgaction.quarantine{% endtrans %}
-                {% elseif mail.doc.msgaction == 'ARCHIVE' %}
-                  {% trans %}index.table.tbody.msgaction.archive{% endtrans %}
-                {% elseif mail.doc.msgaction == 'QUEUE' %}
-                  {% trans with {'%count%': mail.retry ? mail.retry : 0 } %}index.table.tbody.msgaction.queue{% endtrans %} <span class="text-muted">{{ mail.doc.queue.errormsg }}</span>
-                {% else %}
-                  {{ mail.doc.msgdescription }}
-                {% endif %}
-              </span>
-            </a>
-          </td>
-          {% if feature_scores %}
-            <td class="d-none d-lg-table-cell">
-              <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-                {{ mail.scores }}
-              </a>
-            </td>
-          {% endif %}
-          <td>
-            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-              {% if mail.today %}
-                <span class="d-none d-lg-inline">{{ mail.time|date('M j Y') }}, </span>{{ mail.time|date('H:i') }}<span class="d-none d-lg-inline">{{ mail.time|date(':s') }}</span>
-              {% else %}
-                {{ mail.time|date('M j Y') }}<span class="d-none d-lg-inline">, {{ mail.time|date('H:i:s') }}</span>
+          {% for column in table_columns %}
+            {% if column == 'action' %}
+              <td class="nopad">
+                <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                  <span class="badge" style="background-color: {{ mail.action_color }}; color: #fff; width: 17px" title="{{ mail.doc.queue.action ?? mail.doc.msgaction }}">
+                    {{ mail.action_text }}
+                  </span>
+                </a>
+              </td>
+            {% elseif column == 'from' %}
+              <td>
+                <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                  {{ mail.doc.msgfrom }}
+                </a>
+              </td>
+            {% elseif column == 'to' %}
+              {% if mailhasmultipleaddresses %}
+                <td>
+                  <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                    {{ mail.doc.msgto }}
+                  </a>
+                </td>
               {% endif %}
-            </a>
-          </td>
-          <td class="d-none d-lg-table-cell">
-            {% if mail.type == 'queue' %}<a title="{% trans %}index.table.tbody.action.retry{% endtrans %}" data-action="retry"><i class="fa fa-mail-forward"></i></a>{% endif %}
-            {% if mail.type == 'archive' %}<a title="{% trans %}index.table.tbody.action.duplicate{% endtrans %}" data-action="duplicate"><i class="fa fa-mail-forward"></i></a>{% endif %}
-          </td>
+            {% elseif column == 'subject' %}
+              <td>
+                <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                  {{ mail.doc.msgsubject }}
+                </a>
+              </td>
+            {% elseif column == 'status' %}
+              <td class="d-none d-lg-table-cell">
+                <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                  <span title="{{ mail.description }}">
+                    {% if mail.doc.queue.action %}
+                      {{ mail.doc.queue.errormsg }}
+                    {% elseif mail.doc.msgaction == 'QUARANTINE' %}
+                      {% trans %}index.table.tbody.msgaction.quarantine{% endtrans %}
+                    {% elseif mail.doc.msgaction == 'ARCHIVE' %}
+                      {% trans %}index.table.tbody.msgaction.archive{% endtrans %}
+                    {% elseif mail.doc.msgaction == 'QUEUE' %}
+                      {% trans with {'%count%': mail.retry ? mail.retry : 0 } %}index.table.tbody.msgaction.queue{% endtrans %} <span class="text-muted">{{ mail.doc.queue.errormsg }}</span>
+                    {% else %}
+                      {{ mail.doc.msgdescription }}
+                    {% endif %}
+                  </span>
+                </a>
+              </td>
+            {% elseif column == 'scores' %}
+              {% if feature_scores %}
+                <td class="d-none d-lg-table-cell">
+                  <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                    {{ mail.scores }}
+                  </a>
+                </td>
+              {% endif %}
+            {% elseif column == 'date' %}
+              <td>
+                <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                  {% if mail.today %}
+                    <span class="d-none d-lg-inline">{{ mail.time|date('M j Y') }}, </span>{{ mail.time|date('H:i') }}<span class="d-none d-lg-inline">{{ mail.time|date(':s') }}</span>
+                  {% else %}
+                    {{ mail.time|date('M j Y') }}<span class="d-none d-lg-inline">, {{ mail.time|date('H:i:s') }}</span>
+                  {% endif %}
+                </a>
+              </td>
+            {% endif %}
+          {% endfor %}
         </tr>
         {% endfor %}
       </tbody>
