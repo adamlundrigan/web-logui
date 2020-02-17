@@ -60,8 +60,25 @@ class ElasticsearchBackend extends Backend
       if (count($indices) < 1)
         return [];
 
+      $schema = $settings->getElasticsearchMappings();
+
       // sort
-      $sort = new FieldSort($this->es->getTimefilter(), FieldSort::DESC);
+      $fieldsort = $this->es->getTimefilter();
+      if (isset($param['sort'])) {
+        switch ($param['sort']) {
+          case 'to':
+            $fieldsort = $schema['msgto'].'.keyword';
+          break;
+          case 'from':
+            $fieldsort = $schema['msgfrom'].'.keyword';
+          break;
+          case 'subject':
+            $fieldsort = $schema['msgsubject'].'.keyword';
+            break;
+        }
+      }
+      $fieldorder = isset($param['sortorder']) ? $param['sortorder'] : 'DESC';
+      $sort = new FieldSort($fieldsort, $fieldorder === 'DESC' ? FieldSort::DESC : FieldSort::ASC);
 
       // query
       $query = new BoolQuery();
@@ -81,8 +98,6 @@ class ElasticsearchBackend extends Backend
         'lt' => $param['offset'] ?? $stop->getTimestamp() * 1000,
         'gte' => $start->getTimestamp() * 1000
       ] + $query_timezone));
-
-      $schema = $settings->getElasticsearchMappings();
 
       if (is_string($search) && strlen($search) > 0) {
         $searchFields = [

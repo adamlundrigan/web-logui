@@ -18,18 +18,6 @@ $action_colors = array(
   'DEFER' => '#e83e8c',
 );
 
-$action_icons = array(
-  'DELIVER' => 'fa fa-check',
-  'QUEUE' => 'fa fa-exchange-alt',
-  'QUARANTINE' => 'fa fa-inbox',
-  'ARCHIVE' => 'fa fa-inbox',
-  'REJECT' => 'fa fa-ban',
-  'DELETE' => 'fa fa-trash-alt',
-  'BOUNCE' => 'fa fa-reply',
-  'ERROR' => 'fa fa-exclamation',
-  'DEFER' => 'far fa-clock',
-);
-
 function get_preview_link($m, $opts = [])
 {
   return '?'.http_build_query(array(
@@ -44,7 +32,7 @@ $esBackend = new ElasticsearchBackend($settings->getElasticsearch());
 // Default values
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $size = isset($_GET['size']) ? intval($_GET['size']) : 50;
-$size = $size > 5000 ? 5000 : $size;
+$size = $size > 1000 ? 1000 : $size;
 
 // time partitioning
 [$index_start, $index_stop] = valid_date_range($_GET['start'], $_GET['stop']);
@@ -64,6 +52,14 @@ if (isset($_GET['offset'])) {
   $param['offset'] = (int)$_GET['offset'];
   $prev_button = true; // enable "previous" page button
 }
+
+$param['sort'] = 'date';
+if (isset($_GET['sort']) && in_array($_GET['sort'], ['to', 'from', 'subject', 'date']))
+  $param['sort'] = $_GET['sort'];
+
+$param['sortorder'] = 'DESC';
+if (isset($_GET['order']) && in_array(strtoupper($_GET['order']), ['DESC', 'ASC']))
+  $param['sortorder'] = strtoupper($_GET['order']);
 
 $param['index_range'] = ['start' => $index_start, 'stop' => $index_stop];
 
@@ -139,7 +135,6 @@ foreach ($results as $m) {
 
   $mail['preview'] = $preview;
   $mail['previewlink'] = get_preview_link($m, ['index' => $m['index']]);
-  $mail['action_icon'] = $action_icons[$m['doc']->queue['action'] ?? $m['doc']->msgaction];
   $mail['action_text'] = substr($m['doc']->queue['action'] ?? $m['doc']->msgaction, 0, 1);
   $mail['action_color'] = $action_colors[$m['doc']->queue['action'] ?? $m['doc']->msgaction];
   if ($settings->getDisplayScores()) {
@@ -244,7 +239,9 @@ $twigLocals = [
   'next_button'               => $next_button,
   'pagesizes'                 => $pagesize,
   'paging'                    => $paging,
-  'filters'                   => $_SESSION['filters'] ?? []
+  'filters'                   => $_SESSION['filters'] ?? [],
+  'sortby'                    => $param['sort'],
+  'sortorder'                 => $param['sortorder']
 ];
 
 echo $twig->render('index.twig', $twigGlobals + $twigLocals);

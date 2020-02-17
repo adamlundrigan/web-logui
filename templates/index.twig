@@ -19,342 +19,393 @@
 {% endblock %}
 
 {% block body %}
-<nav class="navbar navbar-expand-md navbar-light bg-light">
-  <button class="navbar-toggler d-block d-md-none" type="button" data-toggle="collapse" data-target="#toolbar-collapse">
-    <i class="fa fa-search"></i>
-  </button>
-  <div class="collapse navbar-collapse" id="toolbar-collapse">
-    <form class="form-inline pt-2 pt-md-0" id="filter-form">
-      <input type="hidden" name="page" value="index">
-      <input type="hidden" name="size" value="{{ size }}">
-      <input type="hidden" name="start" value="{{ index_start }}">
-      <input type="hidden" name="stop" value="{{ index_stop }}">
-      <div class="input-group">
-        <input type="text" class="form-control" id="add-filter-text" name="search" size="35" placeholder="{% trans %}index.nav.search.input{% endtrans %}">
-        <div class="input-group-append">
-          <button type="submit" class="btn btn-outline-primary"><i class="fa fa-search fa-fw"></i><span class="d-inline d-md-none d-lg-inline"></span></button>
-        </div>
-      </div>
-    </form>
-    <ul class="nav navbar-nav mr-auto ml-md-3">
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-plus"></i>&nbsp;{% trans %}index.nav.filter{% endtrans %}</a>
-        <form method="POST">
-          <div class="dropdown-menu" style="width: 400px">
-            <h6 class="px-3 py-2">Search filter</h6>
-            <div class="dropdown-divider"></div>
-            <div class="px-3 py-2">
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="filter-field">Field</label>
-                  <select class="custom-select" id="filter-field" name="filter-field">
-                    <option></option>
-                  </select>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="filter-operator">Operator</label>
-                  <select class="custom-select" id="filter-operator" name="filter-operator">
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="filter-value">Value</label>
-                <div id="filter-value-field">
-                  <input type="text" class="form-control" size="30" disabled>
-                </div>
-              </div>
-              <button type="submit" class="btn btn-outline-primary float-right mb-1">Add</button>
-            </div>
-          </div>
-        </form>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="modal" data-target="#exportbuilder"><i class="fa fa-download"></i><span class="d-inline d-md-none d-lg-inline">&nbsp;{% trans %}index.nav.exportcsv{% endtrans %}</span></a>
-      </li>
-    </ul>
-    <hr class="d-block d-md-none mt-2 mb-3" />
-    <form class="form-inline">
-      <input type="hidden" name="size" value="{{ size }}">
-      <input type="hidden" name="search" value="{{ search }}">
-      {% include 'datepicker.twig' %}
-      <button class="btn btn-outline-primary ml-2" id="update-interval"><i class="fa fa-redo-alt"></i><span class="d-inline d-md-none d-lg-inline">&nbsp;{% trans %}index.nav.refresh{% endtrans %}</span></button>
-    </form>
-  </div>
-</nav>
-{% if not filters is empty or not search is empty %}
-<nav class="navbar navbar-expand navbar-light bg-light pt-0" id="filter-items">
-  <ul class="nav navbar-nav">
-    <li><i class="fa fa-filter fa-fw mr-2 text-dark" title="Active filters"></i></li>
-    {% if not search is empty %}
-    <li class="mr-2">
-      <span class="badge badge-pill badge-primary py-1 px-2">Text search: {{ search }}<a href="?page=index&size={{ size }}&start={{ index_start }}&stop={{ index_stop }}" class="text-light" style="line-height: 0.25rem;"><i class="fa fa-times fa-xs pl-2"></i></a></span>
-    </li>
-    {% endif %}
-    {% for field, i in filters %}
-      {% for filter in i %}
-        <li class="mr-2">
-          <span class="badge badge-pill badge-secondary py-1 px-2">{{ field }}{% if filter.operator == 'not' %}&nbsp;(NOT){% endif %}{% if filter.operator == 'contains' %}~{% else %}:{% endif %}&nbsp;{{ filter.value }}<a href="?page=index&size={{ size }}&start={{ index_start }}&stop={{ index_stop }}&search={{ search }}&unsetfilter={{ filter.id }}" class="text-light" style="line-height: 0.25rem;"><i class="fa fa-times fa-xs pl-2"></i></a></span>
-        </li>
-      {% endfor %}
-    {% endfor %}
-  </ul>
-</nav>
-{% endif %}
-
-<div class="container-fluid p-0 p-md-3 pt-3">
-  {% if errors %}
-  <p class="text-muted">
-    {% trans %}index.error.message{% endtrans %}
-  </p>
-  {% endif %}
-  <style>
-    table {
-      table-layout: fixed;
-    }
-    td, td > a, .list-group p, .list-group h4 {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-    .nopad > a {
-      padding-left: 0px;
-      padding-right: 0px;
-      padding-top: 6px;
-      padding-bottom: 0px;
-    }
-  </style>
-  <form method="post" id="multiform">
-  <table class="table table-messages table-hover d-none d-md-table">
-    <thead>
-      <tr>
-        <th style="width: 45px"></th>
-        <th>{% trans %}index.table.thead.from{% endtrans %}</th>
-        {% if mailhasmultipleaddresses %}<th>{% trans %}index.table.thead.to{% endtrans %}</th>{% endif %}
-        <th>{% trans %}index.table.thead.subject{% endtrans %}</th>
-        <th class="d-none d-lg-table-cell">{% trans %}index.table.thead.status{% endtrans %}</th>
-        {% if feature_scores %}<th class="d-none d-lg-table-cell" style="width: 120px;">{% trans %}index.table.thead.scores{% endtrans %}</th>{% endif %}
-        <th>{% trans %}index.table.thead.date{% endtrans %}</th>
-        <th style="width: 25px;" class="d-none d-lg-table-cell"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for mail in mails %}
-      <tr>
-        <td class="nopad">
-          <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-            <span class="badge" style="background-color: {{ mail.action_color }}; color: #fff; width: 17px" title="{{ mail.doc.queue.action ?? mail.doc.msgaction }}">
-              {{ mail.action_text }}
-            </span>
-          </a>
-        </td>
-        <td>
-          <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-            {{ mail.doc.msgfrom }}
-          </a>
-        </td>
-        {% if mailhasmultipleaddresses %}
-          <td>
-            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-              {{ mail.doc.msgto }}
-            </a>
-          </td>
-        {% endif %}
-        <td>
-          <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-            {{ mail.doc.msgsubject }}
-          </a>
-        </td>
-        <td class="d-none d-lg-table-cell">
-          <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-            <span title="{{ mail.description }}">
-              {% if mail.doc.queue.action %}
-                {{ mail.doc.queue.errormsg }}
-              {% elseif mail.doc.msgaction == 'QUARANTINE' %}
-                {% trans %}index.table.tbody.msgaction.quarantine{% endtrans %}
-              {% elseif mail.doc.msgaction == 'ARCHIVE' %}
-                {% trans %}index.table.tbody.msgaction.archive{% endtrans %}
-              {% elseif mail.doc.msgaction == 'QUEUE' %}
-                {% trans with {'%count%': mail.retry ? mail.retry : 0 } %}index.table.tbody.msgaction.queue{% endtrans %} <span class="text-muted">{{ mail.doc.queue.errormsg }}</span>
-              {% else %}
-                {{ mail.doc.msgdescription }}
-              {% endif %}
-            </span>
-          </a>
-        </td>
-        {% if feature_scores %}
-          <td class="d-none d-lg-table-cell">
-            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-              {{ mail.scores }}
-            </a>
-          </td>
-        {% endif %}
-        <td>
-          <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
-            {% if mail.today %}
-              <span class="d-none d-lg-inline">{{ mail.time|date('M j Y') }}, </span>{{ mail.time|date('H:i') }}<span class="d-none d-lg-inline">{{ mail.time|date(':s') }}</span>
-            {% else %}
-              {{ mail.time|date('M j Y') }}<span class="d-none d-lg-inline">, {{ mail.time|date('H:i:s') }}</span>
-            {% endif %}
-          </a>
-        </td>
-        <td class="d-none d-lg-table-cell">
-          {% if mail.type == 'queue' %}<a title="{% trans %}index.table.tbody.action.retry{% endtrans %}" data-action="retry"><i class="fa fa-mail-forward"></i></a>{% endif %}
-          {% if mail.type == 'archive' %}<a title="{% trans %}index.table.tbody.action.duplicate{% endtrans %}" data-action="duplicate"><i class="fa fa-mail-forward"></i></a>{% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% if mails|length < 1 %}
-  <div class="d-none d-md-block">
-    <div class="text-muted col-12 text-center mb-3">{% trans %}index.table.empty{% endtrans %}</div>
-  </div>
-  {% endif %}
-  </form>
-
-  <div class="list-group list-group-flush d-block d-md-none mb-3">
-    {% for mail in mails %}
-      <a href="{{ mail.previewlink }}" class="list-group-item list-group-item-action p-0">
-        <table cellspacing="0" cellpadding="0" style="width: 100%;">
-          <tr>
-            <td style="background-color: {{ mail.action_color }}; text-align: center; width: 20px;">
-              <span style="color: #fff;" class="{{ mail.action_icon }}"></span>
-            </td>
-            <td class="p-2">
-              <span class="float-right">{% if mail.today %}{{ mail.time|date('H:i') }}{% else %}{{ mail.time|date('m j Y') }}{% endif %}</span>
-              <h5 class="list-group-item-heading">
-                {% if mail.doc.msgfrom %}{{ mail.doc.msgfrom }}{% else %}<span class="text-muted">{% trans %}index.table.tbody.mail.emptysender{% endtrans %}</span>{% endif %}
-                {% if mailhasmultipleaddresses %}<br><small>&rarr;&nbsp;{{ mail.doc.msgto }}</small>{% endif %}
-              </h5>
-              <span class="list-group-item-text clearfix">
-                {{ mail.doc.msgsubject }}
-              </span>
-            </td>
-          </tr>
-        </table>
-      </a>
-    {% else %}
-      <a class="list-group-item disabled text-center">{% trans %}index.table.empty{% endtrans %}</a>
-    {% endfor %}
-  </div>
-
-  <form id="nav-form">
-    <input type="hidden" name="page" value="index">
-    <ul class="nav d-flex justify-content-between px-4">
-      <li class="nav-item"><button type="button" class="btn btn-sm {% if not prev_button %}btn-outline-secondary{% else %}btn-outline-primary{% endif %}" {% if not prev_button %}disabled{% endif %} href="#" onclick="history.go(-1); return false;"><i class="fas fa-chevron-left fa-sm"></i> {% trans %}index.paging.previous{% endtrans %}</a></li>
-      <li class="nav-item d-inline-flex">
-        {% if not filters is empty or not search is empty %}
-          <span class="p-1 text-muted d-none d-md-inline">{% trans with {'%count%': mails_count } %}index.paging.totalcount{% endtrans %}</span>
-        {% endif %}
-        <ul class="pagination pagination-sm">
-          {% for pagesize in pagesizes %}
-            <li class="page-item {% if size==pagesize %} active{% endif %}">
-              <a class="page-link" href="?page=index&size={{ pagesize }}&start={{ index_start }}&stop={{ index_stop }}&search={{ search }}">{{ pagesize }}</a>
-            </li>
-          {% endfor %}
-          </ul>
-          <span class="p-1 text-muted d-none d-md-inline">{% trans %}index.paging.limit{% endtrans %}</span>
-        </li>
-      <li class="nav-item"><button type="button" class="btn btn-sm {% if not next_button %}btn-outline-secondary{% else %}btn-outline-primary{% endif %}" {% if not next_button %}disabled{% endif %} href="#" onclick="$('#nav-form').submit(); return false;">{% trans %}index.paging.next{% endtrans %} <i class="fas fa-chevron-right fa-sm"></i></a></li>
-    </ul>
-    <input type="hidden" name="size" value="{{ size }}">
-    <input type="hidden" name="search" value="{{ search }}">
-    <input type="hidden" name="start" value="{{ index_start }}">
-    <input type="hidden" name="stop" value="{{ index_stop }}">
-    {% for name, value in paging %}
-      <input type="hidden" name="{{ name }}" value="{{ value }}">
-    {% endfor %}
-  </form>
-  {% if errors %}
-  <p>
-    <p class="text-muted small">
-      {% trans %}index.error.debug{% endtrans %}:
-      <ul>
-      {% for error in errors %}
-          <li class="text-muted small">{{ error }}</li>
-      {% endfor %}
-      </ul>
-    </p>
-  </p>
-  {% endif %}
-</div>
-
-<div class="modal fade" id="exportbuilder">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h6 class="modal-title">{% trans %}index.modal.csv.title{% endtrans %}</h6>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form target="_blank">
+  <nav class="navbar navbar-expand-md navbar-light bg-light">
+    <button class="navbar-toggler d-block d-md-none" type="button" data-toggle="collapse" data-target="#toolbar-collapse">
+      <i class="fa fa-search"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="toolbar-collapse">
+      <form class="form-inline pt-2 pt-md-0" id="filter-form">
         <input type="hidden" name="page" value="index">
-        <input type="hidden" name="search" value="{{ search }}">
-        <input type="hidden" name="exportcsv" value="true">
-        <div class="modal-body" id="export">
-          <p>{% trans %}index.modal.csv.paragraph{% endtrans %}</p>
-          <div class="form-group row">
-            <label class="col-sm-4 col-form-label">{% trans %}index.modal.csv.fields.title{% endtrans %}</label>
-            <div class="col-sm-8">
-              <div class="mb-2">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" name="export[action]" value="true" type="checkbox" checked>
-                  <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.action{% endtrans %}</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" name="export[from]" value="true" type="checkbox" checked>
-                  <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.from{% endtrans %}</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" name="export[to]" value="true" type="checkbox" checked>
-                  <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.to{% endtrans %}</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" name="export[subject]" value="true" type="checkbox" checked>
-                  <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.subject{% endtrans %}</label>
-                </div>
-              </div>
-              <div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" name="export[status]" value="true" type="checkbox" checked>
-                  <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.status{% endtrans %}</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" name="export[date]" value="true" type="checkbox" checked>
-                  <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.date{% endtrans %}</label>
-                </div>
-                {% if feature_scores %}
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" name="export[scores]" value="true" type="checkbox" checked>
-                  <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.scores{% endtrans %}</label>
-                </div>
-                {% endif %}
-              </div>
-            </div>
+        <input type="hidden" name="size" value="{{ size }}">
+        <input type="hidden" name="start" value="{{ index_start }}">
+        <input type="hidden" name="stop" value="{{ index_stop }}">
+        <input type="hidden" name="sort" value="{{ sortby }}">
+        <input type="hidden" name="order" value="{{ sortorder }}">
+        <div class="input-group">
+          <input type="text" class="form-control" id="add-filter-text" name="search" size="35" placeholder="{% trans %}index.nav.search.input{% endtrans %}">
+          <div class="input-group-append">
+            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-search fa-fw"></i><span class="d-inline d-md-none d-lg-inline"></span></button>
           </div>
-          <div class="form-group row">
-            <label class="col-sm-4 control-label">{% trans %}index.modal.csv.limit{% endtrans %}</label>
-            <div class="col-sm-4">
-              <input type="text" class="form-control" name="size" value="{{ size }}">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-4"></label>
-            <div class="col-sm-8">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" name="export[headers]" value="true" type="checkbox" checked>
-                <label class="form-check-label">{% trans %}index.modal.csv.headers{% endtrans %}</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans %}index.modal.csv.buttons.close{% endtrans %}</button>
-          <input type="submit" class="btn btn-primary" value="{% trans %}index.modal.csv.buttons.export{% endtrans %}">
         </div>
       </form>
+      <ul class="nav navbar-nav mr-auto ml-md-3">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-plus"></i>&nbsp;{% trans %}index.nav.filter{% endtrans %}</a>
+          <form method="POST">
+            <div class="dropdown-menu" style="width: 400px">
+              <h6 class="px-3 py-2">Search filter</h6>
+              <div class="dropdown-divider"></div>
+              <div class="px-3 py-2">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="filter-field">Field</label>
+                    <select class="custom-select" id="filter-field" name="filter-field">
+                      <option></option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="filter-operator">Operator</label>
+                    <select class="custom-select" id="filter-operator" name="filter-operator">
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="filter-value">Value</label>
+                  <div id="filter-value-field">
+                    <input type="text" class="form-control" size="30" disabled>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-outline-primary float-right mb-1">Add</button>
+              </div>
+            </div>
+          </form>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#exportbuilder"><i class="fa fa-download"></i><span class="d-inline d-md-none d-lg-inline">&nbsp;{% trans %}index.nav.exportcsv{% endtrans %}</span></a>
+        </li>
+      </ul>
+      <hr class="d-block d-md-none mt-2 mb-3" />
+      <form class="form-inline">
+        <input type="hidden" name="size" value="{{ size }}">
+        <input type="hidden" name="search" value="{{ search }}">
+        <input type="hidden" name="sort" value="{{ sortby }}">
+        <input type="hidden" name="order" value="{{ sortorder }}">
+        {% include 'datepicker.twig' %}
+        <button class="btn btn-outline-primary ml-2" id="update-interval"><i class="fa fa-redo-alt"></i><span class="d-inline d-md-none d-lg-inline">&nbsp;{% trans %}index.nav.refresh{% endtrans %}</span></button>
+      </form>
+    </div>
+  </nav>
+  {% if not filters is empty or not search is empty %}
+  <nav class="navbar navbar-expand navbar-light bg-light pt-0" id="filter-items">
+    <ul class="nav navbar-nav">
+      <li><i class="fa fa-filter fa-fw mr-2 text-dark" title="Active filters"></i></li>
+      {% if not search is empty %}
+      <li class="mr-2">
+        <span class="badge badge-pill badge-primary py-1 px-2">Text search: {{ search }}<a href="?page=index&size={{ size }}&start={{ index_start }}&stop={{ index_stop }}" class="text-light" style="line-height: 0.25rem;"><i class="fa fa-times fa-xs pl-2"></i></a></span>
+      </li>
+      {% endif %}
+      {% for field, i in filters %}
+        {% for filter in i %}
+          <li class="mr-2">
+            <span class="badge badge-pill badge-secondary py-1 px-2">{{ field }}{% if filter.operator == 'not' %}&nbsp;(NOT){% endif %}{% if filter.operator == 'contains' %}~{% else %}:{% endif %}&nbsp;{{ filter.value }}<a href="?page=index&size={{ size }}&start={{ index_start }}&stop={{ index_stop }}&search={{ search }}&unsetfilter={{ filter.id }}" class="text-light" style="line-height: 0.25rem;"><i class="fa fa-times fa-xs pl-2"></i></a></span>
+          </li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
+
+  <div class="container-fluid p-0 p-md-3 pt-3">
+    {% if errors %}
+    <p class="text-muted">
+      {% trans %}index.error.message{% endtrans %}
+    </p>
+    {% endif %}
+    <style>
+      table {
+        table-layout: fixed;
+      }
+      td, td > a, .list-group p, .list-group h4 {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .nopad > a {
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: 6px;
+        padding-bottom: 0px;
+      }
+    </style>
+    <form method="post" id="multiform">
+    <table class="table table-messages table-hover d-none d-md-table">
+      <thead>
+        {%
+          set link_sort = '?page=index&start=' ~ index_start ~ '&stop=' ~ index_stop ~ '&size=' ~ size
+        %}
+        <tr>
+          <th style="width: 45px"></th>
+          <th>
+            <a href="{{link_sort}}&sort=from" class="text-dark">{% trans %}index.table.thead.from{% endtrans %}</a>
+            {% if sortby == 'from' %}
+              {% if sortorder == 'DESC' %}
+                <a href="{{link_sort}}&sort=from&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
+              {% else %}
+                <a href="{{link_sort}}&sort=from&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+              {% endif %}
+            {% endif %}
+          </th>
+          {% if mailhasmultipleaddresses %}
+            <th>
+              <a href="{{link_sort}}&sort=to" class="text-dark">{% trans %}index.table.thead.to{% endtrans %}</a>
+              {% if sortby == 'to' %}
+                {% if sortorder == 'DESC' %}
+                  <a href="{{link_sort}}&sort=to&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
+                {% else %}
+                  <a href="{{link_sort}}&sort=to&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+                {% endif %}
+              {% endif %}
+            </th>
+          {% endif %}
+          <th>
+            <a href="{{link_sort}}&sort=subject" class="text-dark">
+              {% trans %}index.table.thead.subject{% endtrans %}
+              {% if sortby == 'subject' %}
+                {% if sortorder == 'DESC' %}
+                  <a href="{{link_sort}}&sort=subject&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
+                {% else %}
+                  <a href="{{link_sort}}&sort=subject&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+                {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th class="d-none d-lg-table-cell text-dark">{% trans %}index.table.thead.status{% endtrans %}</th>
+          {% if feature_scores %}<th class="d-none d-lg-table-cell text-dark" style="width: 120px;">{% trans %}index.table.thead.scores{% endtrans %}</th>{% endif %}
+          <th>
+            <a href="{{link_sort}}&sort=date" class="text-dark">
+              {% trans %}index.table.thead.date{% endtrans %}
+              {% if sortby == 'date' %}
+                {% if sortorder == 'DESC' %}
+                  <a href="{{link_sort}}&sort=date&order=ASC" class="text-dark"><i class="fas fa-sort-up"></i></a>
+                {% else %}
+                  <a href="{{link_sort}}&sort=date&order=DESC" class="text-dark"><i class="fas fa-sort-down"></i></a>
+                {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th style="width: 25px;" class="d-none d-lg-table-cell"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mail in mails %}
+        <tr>
+          <td class="nopad">
+            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+              <span class="badge" style="background-color: {{ mail.action_color }}; color: #fff; width: 17px" title="{{ mail.doc.queue.action ?? mail.doc.msgaction }}">
+                {{ mail.action_text }}
+              </span>
+            </a>
+          </td>
+          <td>
+            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+              {{ mail.doc.msgfrom }}
+            </a>
+          </td>
+          {% if mailhasmultipleaddresses %}
+            <td>
+              <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                {{ mail.doc.msgto }}
+              </a>
+            </td>
+          {% endif %}
+          <td>
+            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+              {{ mail.doc.msgsubject }}
+            </a>
+          </td>
+          <td class="d-none d-lg-table-cell">
+            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+              <span title="{{ mail.description }}">
+                {% if mail.doc.queue.action %}
+                  {{ mail.doc.queue.errormsg }}
+                {% elseif mail.doc.msgaction == 'QUARANTINE' %}
+                  {% trans %}index.table.tbody.msgaction.quarantine{% endtrans %}
+                {% elseif mail.doc.msgaction == 'ARCHIVE' %}
+                  {% trans %}index.table.tbody.msgaction.archive{% endtrans %}
+                {% elseif mail.doc.msgaction == 'QUEUE' %}
+                  {% trans with {'%count%': mail.retry ? mail.retry : 0 } %}index.table.tbody.msgaction.queue{% endtrans %} <span class="text-muted">{{ mail.doc.queue.errormsg }}</span>
+                {% else %}
+                  {{ mail.doc.msgdescription }}
+                {% endif %}
+              </span>
+            </a>
+          </td>
+          {% if feature_scores %}
+            <td class="d-none d-lg-table-cell">
+              <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+                {{ mail.scores }}
+              </a>
+            </td>
+          {% endif %}
+          <td>
+            <a class="text-dark text-decoration-none" href="{{ mail.previewlink }}">
+              {% if mail.today %}
+                <span class="d-none d-lg-inline">{{ mail.time|date('M j Y') }}, </span>{{ mail.time|date('H:i') }}<span class="d-none d-lg-inline">{{ mail.time|date(':s') }}</span>
+              {% else %}
+                {{ mail.time|date('M j Y') }}<span class="d-none d-lg-inline">, {{ mail.time|date('H:i:s') }}</span>
+              {% endif %}
+            </a>
+          </td>
+          <td class="d-none d-lg-table-cell">
+            {% if mail.type == 'queue' %}<a title="{% trans %}index.table.tbody.action.retry{% endtrans %}" data-action="retry"><i class="fa fa-mail-forward"></i></a>{% endif %}
+            {% if mail.type == 'archive' %}<a title="{% trans %}index.table.tbody.action.duplicate{% endtrans %}" data-action="duplicate"><i class="fa fa-mail-forward"></i></a>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if mails|length < 1 %}
+    <div class="d-none d-md-block">
+      <div class="text-muted col-12 text-center mb-3">{% trans %}index.table.empty{% endtrans %}</div>
+    </div>
+    {% endif %}
+    </form>
+
+    <div class="list-group list-group-flush d-block d-md-none mb-3">
+      {% for mail in mails %}
+        <a href="{{ mail.previewlink }}" class="list-group-item list-group-item-action p-0">
+          <table cellspacing="0" cellpadding="0" style="width: 100%;">
+            <tr>
+              <td style="background-color: {{ mail.action_color }}; text-align: center; width: 20px;">
+                <span style="color: #fff;" class="{{ mail.action_icon }}"></span>
+              </td>
+              <td class="p-2">
+                <span class="float-right">{% if mail.today %}{{ mail.time|date('H:i') }}{% else %}{{ mail.time|date('m j Y') }}{% endif %}</span>
+                <h5 class="list-group-item-heading">
+                  {% if mail.doc.msgfrom %}{{ mail.doc.msgfrom }}{% else %}<span class="text-muted">{% trans %}index.table.tbody.mail.emptysender{% endtrans %}</span>{% endif %}
+                  {% if mailhasmultipleaddresses %}<br><small>&rarr;&nbsp;{{ mail.doc.msgto }}</small>{% endif %}
+                </h5>
+                <span class="list-group-item-text clearfix">
+                  {{ mail.doc.msgsubject }}
+                </span>
+              </td>
+            </tr>
+          </table>
+        </a>
+      {% else %}
+        <a class="list-group-item disabled text-center">{% trans %}index.table.empty{% endtrans %}</a>
+      {% endfor %}
+    </div>
+
+    <form id="nav-form">
+      <input type="hidden" name="page" value="index">
+      <ul class="nav d-flex justify-content-between px-4">
+        <li class="nav-item"><button type="button" class="btn btn-sm {% if not prev_button %}btn-outline-secondary{% else %}btn-outline-primary{% endif %}" {% if not prev_button %}disabled{% endif %} href="#" onclick="history.go(-1); return false;"><i class="fas fa-chevron-left fa-sm"></i> {% trans %}index.paging.previous{% endtrans %}</a></li>
+        <li class="nav-item d-inline-flex">
+          {% if not filters is empty or not search is empty %}
+            <span class="p-1 text-muted d-none d-md-inline">{% trans with {'%count%': mails_count } %}index.paging.totalcount{% endtrans %}</span>
+          {% endif %}
+          <ul class="pagination pagination-sm">
+            {% for pagesize in pagesizes %}
+              <li class="page-item {% if size==pagesize %} active{% endif %}">
+                <a class="page-link" href="?page=index&size={{ pagesize }}&start={{ index_start }}&stop={{ index_stop }}&search={{ search }}">{{ pagesize }}</a>
+              </li>
+            {% endfor %}
+            </ul>
+            <span class="p-1 text-muted d-none d-md-inline">{% trans %}index.paging.limit{% endtrans %}</span>
+          </li>
+        <li class="nav-item"><button type="button" class="btn btn-sm {% if not next_button %}btn-outline-secondary{% else %}btn-outline-primary{% endif %}" {% if not next_button %}disabled{% endif %} href="#" onclick="$('#nav-form').submit(); return false;">{% trans %}index.paging.next{% endtrans %} <i class="fas fa-chevron-right fa-sm"></i></a></li>
+      </ul>
+      <input type="hidden" name="size" value="{{ size }}">
+      <input type="hidden" name="search" value="{{ search }}">
+      <input type="hidden" name="start" value="{{ index_start }}">
+      <input type="hidden" name="stop" value="{{ index_stop }}">
+      <input type="hidden" name="sort" value="{{ sortby }}">
+      <input type="hidden" name="order" value="{{ sortorder }}">
+      {% for name, value in paging %}
+        <input type="hidden" name="{{ name }}" value="{{ value }}">
+      {% endfor %}
+    </form>
+    {% if errors %}
+    <p>
+      <p class="text-muted small">
+        {% trans %}index.error.debug{% endtrans %}:
+        <ul>
+        {% for error in errors %}
+            <li class="text-muted small">{{ error }}</li>
+        {% endfor %}
+        </ul>
+      </p>
+    </p>
+    {% endif %}
+  </div>
+
+  <div class="modal fade" id="exportbuilder">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">{% trans %}index.modal.csv.title{% endtrans %}</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form target="_blank">
+          <input type="hidden" name="page" value="index">
+          <input type="hidden" name="search" value="{{ search }}">
+          <input type="hidden" name="exportcsv" value="true">
+          <div class="modal-body" id="export">
+            <p>{% trans %}index.modal.csv.paragraph{% endtrans %}</p>
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label">{% trans %}index.modal.csv.fields.title{% endtrans %}</label>
+              <div class="col-sm-8">
+                <div class="mb-2">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="export[action]" value="true" type="checkbox" checked>
+                    <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.action{% endtrans %}</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="export[from]" value="true" type="checkbox" checked>
+                    <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.from{% endtrans %}</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="export[to]" value="true" type="checkbox" checked>
+                    <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.to{% endtrans %}</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="export[subject]" value="true" type="checkbox" checked>
+                    <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.subject{% endtrans %}</label>
+                  </div>
+                </div>
+                <div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="export[status]" value="true" type="checkbox" checked>
+                    <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.status{% endtrans %}</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="export[date]" value="true" type="checkbox" checked>
+                    <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.date{% endtrans %}</label>
+                  </div>
+                  {% if feature_scores %}
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="export[scores]" value="true" type="checkbox" checked>
+                    <label class="form-check-label">{% trans %}index.modal.csv.fields.checkbox.scores{% endtrans %}</label>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-4 control-label">{% trans %}index.modal.csv.limit{% endtrans %}</label>
+              <div class="col-sm-4">
+                <input type="text" class="form-control" name="size" value="{{ size }}">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-4"></label>
+              <div class="col-sm-8">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" name="export[headers]" value="true" type="checkbox" checked>
+                  <label class="form-check-label">{% trans %}index.modal.csv.headers{% endtrans %}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans %}index.modal.csv.buttons.close{% endtrans %}</button>
+            <input type="submit" class="btn btn-primary" value="{% trans %}index.modal.csv.buttons.export{% endtrans %}">
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}
