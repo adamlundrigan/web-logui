@@ -48,6 +48,7 @@ $param = [];
 $errors = [];
 
 // Set offset with GET
+$param['offset'] = 0;
 if (isset($_GET['offset'])) {
   $param['offset'] = (int)$_GET['offset'];
   $prev_button = true; // enable "previous" page button
@@ -122,7 +123,6 @@ foreach ($results as $m) {
   if ($m['type'] == 'archive') {
     $m['doc']->msgaction = 'ARCHIVE';
   }
-  $param['offset'] = $m['receivedtime'];
   if ($m['type'] == 'queue' && $m['doc']->msgaction == 'DELIVER') $m['doc']->msgaction = 'QUEUE';
 
   $mail = array();
@@ -217,7 +217,7 @@ if (isset($_GET['exportcsv'])) {
   die();
 }
 
-$paging['offset'] = $param['offset'];
+$paging['offset'] = $param['offset'] + $size;
 
 $mailAccess = Session::Get()->getAccess('mail') ?? [];
 $domainAccess = Session::Get()->getAccess('domain') ?? [];

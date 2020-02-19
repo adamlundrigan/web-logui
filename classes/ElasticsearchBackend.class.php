@@ -42,11 +42,32 @@ class ElasticsearchBackend extends Backend
 
   public function supportsHistory() { return true; }
 
+  public function scrollMailHistory($scroll_id, $param) {
+    try {
+      $results = [];
+      $settings = Settings::Get();
+
+      // query elasticsearch with an scroll id
+      $response = $this->es->client()->scroll([
+        'scroll_id' => $scroll_id,
+        'scroll' => '2m'
+      ]);
+
+      if (isset($response['hits']['hits']))
+        foreach ($response['hits']['hits'] as $m)
+          $results[] = es_document_parser($m, $settings->getElasticsearchMappings(), $settings->getElasticsearchMetadataFilter());
+
+      return ['items' => $results, 'total' => $response['hits']['total']['value'] ?? 0, 'scroll_id' => $response['_scroll_id'] ?? null];
+    } catch (Exception $e) {
+      $errors[] = "Exception code: ".$e->getMessage();
+      return [];
+    }
+  }
+
   public function loadMailHistory($search, $size, $param, &$errors = array())
   {
     try {
       $results = [];
-
       $settings = Settings::Get();
 
       // set up interval for indices
@@ -95,7 +116,7 @@ class ElasticsearchBackend extends Backend
       $stop->modify('+1 day');
 
       $query->add(new RangeQuery($this->es->getTimefilter(), [
-        'lt' => $param['offset'] ?? $stop->getTimestamp() * 1000,
+        'lt' => $stop->getTimestamp() * 1000,
         'gte' => $start->getTimestamp() * 1000
       ] + $query_timezone));
 
@@ -186,6 +207,7 @@ class ElasticsearchBackend extends Backend
       // params
       $params = [
         'index' => implode(',', $indices),
+        'from' => $param['offset'],
         'size' => $size + 1,
         'body' => $body->toArray()
       ];
@@ -198,7 +220,7 @@ class ElasticsearchBackend extends Backend
         foreach ($response['hits']['hits'] as $m)
           $results[] = es_document_parser($m, $settings->getElasticsearchMappings(), $settings->getElasticsearchMetadataFilter());
 
-      return ['items' => $results, 'total' => $response['hits']['total']['value'] ?? 0];
+      return ['items' => $results, 'total' => $response['hits']['total']['value'] ?? 0, 'scroll_id' => $response['_scroll_id'] ?? null];
     } catch (Exception $e) {
       $errors[] = "Exception code: ".$e->getMessage();
       return [];
