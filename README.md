@@ -80,6 +80,11 @@ $elasticurl = "https://elastic:elastic@yourhostname.com:9200";
 $indexname = "halon";
 $indexrotate = "%Y-%m-%d";
 $indextype = "_doc";
+```
+
+File: `elastic/eodrcpt.hsl`
+```
+include "elastic/settings.hsl";
 
 $httpoptions = [
 	"timeout" => 10,
@@ -89,11 +94,6 @@ $httpoptions = [
 	"tls_default_ca" => true,
 	"headers" => ["Content-Type: application/json"]
 ];
-```
-
-File: `elastic/eodrcpt.hsl`
-```
-include "elastic/settings.hsl";
 
 function sendlog($logdata = []) {
 	global $elasticurl, $httpoptions, $indexname, $indexrotate, $indextype; // settings
@@ -132,6 +132,8 @@ function sendlog($logdata = []) {
 		"receivedtime" => round($time * 1000),
 		"metadata" => GetMetaData()
 	];
+
+	SetMetaData(GetMetaData() + ["receivedtime" => "$time"]);
 
 	$path = "/".$indexname."-".strftime($indexrotate, $time)."/".$indextype."/".$transaction["id"].":".$actionid;
 	http($elasticurl.$path, $httpoptions, [], json_encode($logdata));
@@ -200,32 +202,38 @@ File: `elastic/post.hsl`
 ```
 include "elastic/settings.hsl";
 
-function sendlog() {
-	global $arguments;
-	global $elasticurl, $httpoptions, $indexname, $indexrotate, $indextype; // settings
-	global $messageid, $sender, $senderdomain, $recipient, $recipientdomain, $transportid, $actionid; // previous contexts
-	global $receivedtime, $retry, $retries, $errormsg, $errorcode, $errorndr, $transfertime, $action; // post-delivery
+$httpoptions = [
+	"timeout" => 10,
+	"background" => true,
+	"background_hash" => hash($message["id"]["transaction"]),
+	"background_retry_count" => 1,
+	"tls_default_ca" => true,
+	"headers" => ["Content-Type: application/json"]
+];
 
+function sendlog() {
+	global $elasticurl, $httpoptions, $indexname, $indexrotate, $indextype; // settings
+	global $message, $arguments;
+
+	$receivedtime = GetMetaData()["receivedtime"];
 	$time = time();
 	$logdata["doc"] = [
 		"queue" => [
 			"action" => $arguments["action"] ?? "DELIVER",
-			"retry" => $retry,
-			"retries" => $retries,
-			"errormsg" => $errormsg,
-			"errorcode" => $errorcode,
-			"errorndr" => $errorndr,
-			"transfertime" => $transfertime
+			"retry" => $arguments["retry"],
+			"errormsg" => $arguments["attempt"]["result"]["reason"][0] ?? "",
+			"errorcode" => $arguments["attempt"]["result"]["code"],
+			"transfertime" => $arguments["attempt"]["duration"]
 		],
-		"sender" => $sender,
-		"senderdomain" => $senderdomain,
-		"recipient" => $recipient,
-		"recipientdomain" => $recipientdomain,
-		"transportid" => $transportid,
+		"sender" => $message["sender"],
+		"senderdomain" => $message["senderaddress"]["domain"],
+		"recipient" => $message["recipient"],
+		"recipientdomain" => $message["recipientaddress"]["domain"],
+		"transportid" => $message["transportid"],
 		"finishedtime" => round($time * 1000)
 	];
 
-	$path = "/".$indexname."-".strftime($indexrotate, $receivedtime)."/".$indextype."/".$messageid.":".$actionid."/_update";
+	$path = "/".$indexname."-".strftime($indexrotate, $receivedtime)."/".$indextype."/".$message["id"]["transaction"].":".$message["id"]["queue"]."/_update";
 	http($elasticurl.$path, $httpoptions, [], json_encode($logdata));
 }
 
