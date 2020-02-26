@@ -29,7 +29,7 @@ index:
         5: 'De senaste 30 dagarna'
         6: 'De senaste 60 dagarna'
         7: 'De senaste 6 månaderna'
-        8: 'De senaste 24 timamrna'
+        8: 'De senaste 24 timmarna'
     exportcsv: 'Exportera CSV'
   error:
     message: 'Vissa meddelanden kan vara otillgängliga för tillfället, beroende på underhåll.'
