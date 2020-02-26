@@ -20,7 +20,7 @@
 {% block body %}
   <nav class="navbar navbar-expand navbar-light bg-light navbar-toolbar">
     <ul class="nav navbar-nav mr-auto">
-      <li class="nav-item"><a class="nav-link" href="?page=index"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;{% trans %}preview.nav.back{% endtrans %}</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="history.go(-1); return false;"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;{% trans %}preview.nav.back{% endtrans %}</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       {% if reportfp or reportfn %}
