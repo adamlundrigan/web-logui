@@ -88,8 +88,11 @@
         <a class="nav-link" id="save-changes" href="#" hidden><i class="far fa-save"></i>&nbsp;{% trans %}statistics.nav.savechanges{% endtrans %}</a>
       </li>
     </ul>
-    <form class="form-inline">
+    <form class="form-inline" action="?page=stats">
       <input type="hidden" name="page" value="stats">
+      {% if target %}
+        <input type="hidden" name="set-target" value="{{ target }}">
+      {% endif %}
       {% include 'datepicker.twig' %}
       <button type="button" class="btn btn-outline-primary ml-2" id="realtime-interval"><i class="far fa-clock"></i></button>
       <button class="btn btn-outline-primary ml-2" id="update-interval"><i class="fa fa-redo-alt"></i>&nbsp;{% trans %}statistics.nav.refresh{% endtrans %}</button>
