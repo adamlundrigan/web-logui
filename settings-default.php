@@ -58,7 +58,7 @@
 
 // $settings['elasticsearch']['index']['textlog']['name'] = 'logstash-';
 // $settings['elasticsearch']['index']['textlog']['rotate'] = '%Y.%m.%d';
-// $settings['elasticsearch']['index']['textlog']['type'] = 'doc';
+// $settings['elasticsearch']['index']['textlog']['type'] = '_doc';
 // $settings['elasticsearch']['index']['textlog']['limit'] = 50;
 // $settings['elasticsearch']['index']['textlog']['search_rotate_limit'] = 10;
 // $settings['elasticsearch']['index']['textlog']['timefilter'] = 'received_at';
