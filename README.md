@@ -241,3 +241,8 @@ sendlog();
 ```
 
 Finally, in Halon, under the **Code Editor** page, include the `elastic/eodrcpt.hsl` file in the **EOD rcpt** context, and include the `elastic/post.hsl` file in the QUEUE **Post-delivery** context; refer to the [include](https://docs.halon.io/hsl/structures.html#include) statement.
+
+Halon remote logging to Logstash
+---
+
+To enable the textlog feature, please refer to our [Remote syslog to Logstash](https://support.halon.io/hc/en-us/articles/360000700065) article.
