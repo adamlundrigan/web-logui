@@ -18,14 +18,40 @@
 {% endblock %}
 
 {% block body %}
-  <nav class="navbar navbar-expand navbar-light bg-light navbar-toolbar">
+  <nav class="navbar navbar-expand navbar-light bg-light navbar-toolbar" style="border-bottom: 3px solid {{ action_color }};">
     <ul class="nav navbar-nav mr-auto">
-      <li class="nav-item"><a class="nav-link" href="#" onclick="history.go(-1); return false;"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;{% trans %}preview.nav.back{% endtrans %}</a></li>
+      <li class="nav-item mr-3" id="history_back"><a class="nav-link" href="#" onclick="history.go(-1); return false;"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;{% trans %}preview.nav.back{% endtrans %}</a></li>
+      {% if found_in_node %}
+        {% if 'preview-mail-body' not in disabled_features %}
+          {% if 'preview-mail-body-original' not in disabled_features %}
+            <li class="nav-item dropdown mr-2">
+              <a href="#" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" role="button"><i class="fa fa-download"></i>&nbsp;{% trans %}preview.nav.download.title{% endtrans %}</a>
+              <div class="dropdown-menu" role="menu">
+                <a class="dropdown-item" href="?page=download&id={{ mail.msgid }}:{{ mail.msgactionid }}&node={{ node_id }}&index={{ index }}">{% trans %}preview.nav.download.option.modified{% endtrans %}</a>
+                <a class="dropdown-item" href="?page=download&original=1&id={{ mail.msgid }}:{{ mail.msgactionid }}&node={{ node_id }}&index={{ index }}">{% trans %}preview.nav.download.option.original{% endtrans %}</a>
+              </div>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="?page=download&id={{ mail.msgid }}:{{ mail.msgactionid }}&node={{ node_id }}&&index={{ index }}"><i class="fa fa-download"></i>&nbsp;{% trans %}preview.nav.download.title{% endtrans %}</a>
+            </li>
+          {% endif %}
+        {% endif %}
+        {% if (msg_action in ['QUEUE', 'QUARANTINE']) and not pending_action_type and not errors.database is defined %}
+          <li class="nav-item">
+            <div class="btn-group">
+              <a class="btn btn-outline-primary" href="#" data-action="bounce"><i class="fa fa-reply"></i>&nbsp;{% trans %}preview.nav.actions.bounce{% endtrans %}</a>
+              <a class="btn btn-outline-primary" href="#" data-action="delete"><i class="far fa-trash-alt"></i>&nbsp;{% trans %}preview.nav.actions.delete{% endtrans %}</a>
+              <a class="btn btn-outline-primary" href="#" data-action="retry"><i class="fa fa-share"></i>&nbsp;{% if msg_action=='QUARANTINE' or msg_action=='ARCHIVE' %}{% trans %}preview.nav.actions.release{% endtrans %}{% else %}{% trans %}preview.nav.actions.retry{% endtrans %}{% endif %}</a>
+            </div>
+          </li>
+        {% endif %}
+      {% endif %}
     </ul>
     <ul class="nav navbar-nav navbar-right">
       {% if reportfp or reportfn %}
-        <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-ban"></i>&nbsp;{% trans %}preview.nav.report.title{% endtrans %}</a>
+        <li class="nav-item mr-2 dropdown">
+          <a href="#" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-ban"></i>&nbsp;{% trans %}preview.nav.report.title{% endtrans %}</a>
           <div class="dropdown-menu dropdown-menu-right" role="menu">
             {% if reportfp %}<a class="dropdown-item" href="{{ app.request.uri }}&report=1&reporttype=fp">{% trans %}preview.nav.report.option.fp{% endtrans %}</a>{% endif %}
             {% if reportfpfile %}<a class="dropdown-item" href="{{ app.request.uri }}&report=1&reporttype=fp&file=1">{% trans %}preview.nav.report.option.fpfile{% endtrans %}</a>{% endif %}
@@ -33,27 +59,16 @@
           </div>
         </li>
       {% endif %}
-      {% if found_in_node and (msg_action in ['QUEUE', 'QUARANTINE']) and not pending_action_type and not errors.database is defined %}
-        {% if 'preview-mail-body' not in disabled_features %}
-          {% if 'preview-mail-body-original' not in disabled_features %}
-            <li class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"><i class="fa fa-download"></i>&nbsp;{% trans %}preview.nav.download.title{% endtrans %}</a>
-              <div class="dropdown-menu" role="menu">
-                <a class="dropdown-item" href="?page=download&id={{ mail.msgid }}:{{ mail.msgactionid }}&node={{ node_id }}&index={{ index }}">{% trans %}preview.nav.download.option.modified{% endtrans %}</a>
-                <a class="dropdown-item" href="?page=download&original=1&id={{ mail.msgid }}:{{ mail.msgactionid }}&node={{ node_id }}&index={{ index }}">{% trans %}preview.nav.download.option.original{% endtrans %}</a>
-              </div>
-            </li>
-          {% else %}
-            <li class="nav-item"><a class="nav-link" href="?page=download&id={{ mail.msgid }}:{{ mail.msgactionid }}&node={{ node_id }}&&index={{ index }}"><i class="fa fa-download"></i>&nbsp;{% trans %}preview.nav.download.title{% endtrans %}</a></li>
-          {% endif %}
-        {% endif %}
-        <li class="divider"></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-action="delete"><i class="far fa-trash-alt"></i>&nbsp;{% trans %}preview.nav.actions.delete{% endtrans %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-action="bounce"><i class="fa fa-reply"></i>&nbsp;{% trans %}preview.nav.actions.bounce{% endtrans %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-action="retry"><i class="fa fa-share"></i>&nbsp;{% if msg_action=='QUARANTINE' or msg_action=='ARCHIVE' %}{% trans %}preview.nav.actions.release{% endtrans %}{% else %}{% trans %}preview.nav.actions.retry{% endtrans %}{% endif %}</a></li>
-      {% endif %}
       {% if 'preview-textlog' not in disabled_features and feature_textlog and (is_superadmin or textlog_access) %}
-        <li class="nav-item"><a class="nav-link" href="?page=log&id={{ mail.id }}&index={{ index }}"><i class="far fa-file-alt"></i>&nbsp;{% trans %}preview.nav.textlog{% endtrans %}</a></li>
+        <li class="nav-item mr-2"><a class="btn btn-outline-secondary" href="?page=log&id={{ mail.id }}&index={{ index }}"><i class="far fa-file-alt"></i>&nbsp;{% trans %}preview.nav.textlog{% endtrans %}</a></li>
+      {% endif %}
+      {% if found_in_node and 'preview-mail-body' not in disabled_features and 'preview-mail-body-original' not in disabled_features %}
+        <li class="nav-item">
+          <div class="btn-group btn-group-toggle">
+            <a class="btn btn-outline-secondary {% if show_original %}active{% endif %}" href="{{ show_original_link }}">{% trans %}preview.card.content.source.original{% endtrans %}</a>
+            <a class="btn btn-outline-secondary {% if not show_original %}active{% endif %}" href="{{ show_modified_link }}">{% trans %}preview.card.content.source.modified{% endtrans %}</a>
+          </div>
+        </li>
       {% endif %}
     </ul>
   </nav>
@@ -65,26 +80,33 @@
     {% if pending_action_type %}
       <div class="alert alert-info"><i class="far fa-clock"></i>&nbsp;Message has a pending <span class="font-weight-bold">{{ pending_action_type }}</span> action.</div>
     {% endif %}
+    <div class="row mb-2">
+      <div class="col">
+        <h5 class="font-weight-light">
+          <span class="badge mr-2" style="vertical-align: text-top; margin-top: 0px; background-color: {{ action_color }}; color: #fff" title="{{ mail.queue.action ?? mail.msgaction }}">{{ msg_action }}</span><span>{{mail.msgid}}</span>
+        </h5>
+      </div>
+    </div>
     <div class="row">
-      <div class="col-lg-6">
+      <div class="col-lg-5">
         <div class="card mb-3">
-          <div class="card-header">
-            {% trans %}preview.card.details.title{% endtrans %}
-          </div>
           <div class="card-body">
-            <dl class="preview-details row">
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.action{% endtrans %}</dt><dd class="col-sm-9">
-                <span class="badge" style="background-color: {{ action_color }}; color: #fff" title="{{ mail.queue.action ?? mail.msgaction }}">
-                  {{ msg_action }}
-                </span>
-              </dd>
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.from{% endtrans %}</dt><dd class="col-sm-9 wrap">{{ mail.msgfrom }}</dd>
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.to{% endtrans %}</dt><dd class="col-sm-9 wrap">{{ mail.msgto }}</dd>
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.subject{% endtrans %}</dt><dd class="col-sm-9 wrap">{{ mail.msgsubject }}</dd>
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.date{% endtrans %}</dt><dd class="col-sm-9">{{ time|date('Y-m-d H:i:s') }}</dd>
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.size{% endtrans %}</dt><dd class="col-sm-9 wrap" title="{{ mail.msgsize }} bytes">{{ mail.msgsize }}</dd>
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.details{% endtrans %}</dt>
-              <dd class="col-sm-9">
+            {% if mail.msgtlsstarted == true %}
+              <i class="fa fa-lock float-right text-muted" title="{% trans %}preview.card.details.fields.tlsstarted{% endtrans %}"></i>
+            {% endif %}
+            <dl>
+              <dt>{% trans %}preview.card.details.fields.date{% endtrans %}</dt><dd>{{ time|date('Y-m-d H:i:s') }}</dd>
+              {% if listener %}
+                <dt>{% trans %}preview.card.details.fields.listener{% endtrans %}</dt><dd>{{ listener }}</dd>
+              {% endif %}
+              <dt>{% trans %}preview.card.details.fields.senderhelo{% endtrans %}</dt><dd>{{ mail.msgsenderhelo }}</dd>
+              <dt>{% trans %}preview.card.details.fields.senderip{% endtrans %}</dt><dd>{% if geoip.isocode is defined %}<span class="flag-icon flag-icon-{{ geoip.isocode }}" title="{{ geoip.name }}"></span> {% endif %}{{ mail.msgfromserver }}</dd>
+              <dt>{% trans %}preview.card.details.fields.sender{% endtrans %}</dt><dd class="wrap">{{ mail.msgfrom }}</dd>
+              <dt>{% trans %}preview.card.details.fields.recipient{% endtrans %}</dt><dd class="wrap">{{ mail.msgto }}</dd>
+              <dt>{% trans %}preview.card.details.fields.subject{% endtrans %}</dt><dd class="wrap">{{ mail.msgsubject }}</dd>
+              <dt>{% trans %}preview.card.details.fields.size{% endtrans %}</dt><dd class="wrap" title="{{ mail.msgsize }} bytes">{{ mail.msgsize }} B</dd>
+              <dt>{% trans %}preview.card.details.fields.details{% endtrans %}</dt>
+              <dd>
                 {% if mail.queue.action %}
                   {{ mail.queue.errormsg }}
                 {% elseif mail.doc.msgaction == 'QUEUE' %}
@@ -93,95 +115,54 @@
                   {{ mail.msgdescription }}
                 {% endif %}
               </dd>
-              {% if listener %}<dt class="col-sm-3">{% trans %}preview.card.details.fields.listener{% endtrans %}</dt><dd class="col-sm-9">{{ listener }}</dd>{% endif %}
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.server{% endtrans %}</dt><dd class="col-sm-9">{% if geoip.isocode is defined %}<span class="flag-icon flag-icon-{{ geoip.isocode }}" title="{{ geoip.name }}"></span> {% endif %}{{ mail.msgfromserver }}</dd>
-              {% if mail.msgsasl %}<dt class="col-sm-3">{% trans %}preview.card.details.fields.user{% endtrans %}</dt><dd class="col-sm-9">{{ mail.msgsasl }}</dd>{% endif %}
-              {% if transport %}<dt class="col-sm-3">{% trans %}preview.card.details.fields.transport{% endtrans %}</dt><dd class="col-sm-9">{{ transport }}</dd>{% endif %}
-              <dt class="col-sm-3">{% trans %}preview.card.details.fields.id{% endtrans %}</dt><dd class="col-sm-9">{{ mail.msgid }}</dd>
+              {% if mail.msgsasl %}
+                <dt>{% trans %}preview.card.details.fields.user{% endtrans %}</dt><dd>{{ mail.msgsasl }}</dd>
+              {% endif %}
+              {% if transport %}
+                <dt>{% trans %}preview.card.details.fields.transport{% endtrans %}</dt><dd>{{ transport }}</dd>
+              {% endif %}
             </dl>
           </div>
         </div>
-
-        {% if not msg_mailflow is empty %}
-        <div class="card mb-3">
-          <div class="card-body">
-            <h5 class="card-title">{% trans %}preview.card.flow.title{% endtrans %}</h5>
-            <table class="table table-fixed table-striped">
-              <thead>
-                <tr>
-                  <th>{% trans %}preview.card.flow.thead.action{% endtrans %}</th>
-                  <th>{% trans %}preview.card.flow.thead.status{% endtrans %}</th>
-                  <th style="width: 150px">{% trans %}preview.card.flow.thead.date{% endtrans %}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for i in msg_mailflow %}
-                {% if i.action == 'QUEUE' or i.action == 'QUARANTINE' %}
-                  {% set queued = 1 %}
-                {% else %}
-                  {% set queued = 0 %}
-                {% endif %}
-                <tr>
-                  <td>
-                    <span class="fa-stack fa-fw" style="font-size: 0.75rem;">
-                      <i class="fa fa-square fa-stack-2x" style="color: {{ action_colors.action }};"></i>
-                      <i class="{{ action_icons.action }} fa-lg fa-stack-1x" style="color:#fff;"></i>
-                    </span>
-                    {{ i.action }}{% if i|last and queued == 1 %}&nbsp;<i class="text-muted">({% trans %}preview.card.flow.tbody.status{% endtrans %})</i>{% endif %}
-                  </td>
-                  <td>
-                    <span class="text-muted" title="{{ i.details }}">{{ i.details }}</span>
-                  </td>
-                  <td>
-                    <span title="{{ i.ts0|date('Y-m-d H:i:s') }}">{{ i.ts0|date('Y-m-d H:i:s') }}</span>
-                  </td>
-                </tr>
-                {% if not i|last %}
-                <tr>
-                  <td colspan="3" style="padding-top: 1px; padding-bottom: 1px;">
-                    <i class="fa fa-arrow-down fa-fw"></i>
-                  </td>
-                </tr>
-                {% else %}
-                <tr>
-                  <td colspan="3" style="height: 3px; padding: 0px; {% if queued == 1 %}background: repeating-linear-gradient(-45deg, {{ action_colors.action }}, {{ action_colors.action }} 10px, #fff 10px, #fff 20px);{else}background-color: {{ action_colors.action }}{% endif %}"></td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        {% endif %}
-
-        {% if found_in_node %}
-          {% if header %}
+        {% if mail.metadata is iterable and not mail.metadata is empty %}
           <div class="card mb-3">
             <div class="card-header">
-              <span>{% trans %}preview.card.content.headers.title{% endtrans %}</span>
+              {% trans %}preview.card.metadata.title{% endtrans %}
             </div>
             <div class="card-body">
-              <div class="preview-headers text-muted wrap">{{header}}</div>
+              <dl>
+                {% for key,value in mail.metadata %}
+                  <dt>{{ key }}</dt><dd>{{ value }}</dd>
+                {% endfor %}
+              </dl>
             </div>
           </div>
-          {% endif %}
         {% endif %}
       </div>
 
-      <div class="col-lg-6">
+      <div class="col-lg-7">
         {% if found_in_node %}
+          {% if header %}
+            <div class="card mb-3">
+              <div class="card-header">
+                <a href="#" class="float-right" id="expand-header-btn"><i class="fa fa-expand"></i></a>
+                <span>{% trans %}preview.card.content.headers.title{% endtrans %}</span>
+              </div>
+              <div class="card-body closed" id="header-card-body">
+                <div class="preview-headers text-muted wrap">{{ header }}</div>
+              </div>
+            </div>
+          {% endif %}
           <div class="card mb-3">
             <div class="card-header">
-              {% if 'preview-mail-body' not in disabled_features and 'preview-mail-body-original' not in disabled_features %}
-              <div class="float-right">
-                {% if not show_original %}
-                  {% trans with {'%original_link%': show_original_link|raw } %}preview.card.content.source.original{% endtrans %}
-                {% else %}
-                  {% trans with {'%modified_link%': show_modified_link|raw } %}preview.card.content.source.modified{% endtrans %}
-                {% endif %}
-              </div>
-              {% endif %}
-              <span style="white-space: nowrap;">{% if mail.msgsubject %}{{ mail.msgsubject }}{% else %}<span class="text-muted">{% trans %}preview.card.content.state.nosubject{% endtrans %}</span>{% endif %}</span>
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                  <a class="nav-link {% if show_html == 'HTML' %}active{% endif %}" href="{{ show_html_link }}">HTML</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if show_text == 'TEXT' %}active{% endif %}" href="{{ show_text_link }}">Plain-text</a>
+                </li>
+              </ul>
             </div>
             <div class="card-body">
               {% if 'preview-mail-body' in disabled_features %}
@@ -194,82 +175,55 @@
                 <iframe id="preview-html" sandbox srcdoc="{{ body }}" class="panel-body msg-body-iframe"></iframe>
                 <script>
                   var updateSize = function() {
-                    $("#preview-html").css("height", $(window).height() * 0.4);
+                    $("#preview-html").css("height", $(window).height() * 0.3);
                   }
                   $(updateSize);
                   $(window).resize(updateSize);
                 </script>
               {% endif %}
               {% if attachments %}
-              <div class="card-footer">
-                <ul class="list-inline">
-                  {% for attachment in attachments %}
-                    <li class="nowrap">
-                      <i class="fa fa-{{ attachment.icon }}"></i>
-                      {{ attachment.name }}&nbsp;<small class="text-muted">({{ attachment.size }})</small>
-                    </li>
-                  {% endfor %}
-                </ul>
-              </div>
+                <div class="card-footer">
+                  <ul class="list-inline">
+                    {% for attachment in attachments %}
+                      <li class="nowrap">
+                        <i class="fa fa-{{ attachment.icon }}"></i>
+                        {{ attachment.name }}&nbsp;<small class="text-muted">({{ attachment.size }})</small>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
               {% endif %}
-
-              {% if (body is defined and encode == 'HTML') or show_text %}
-                <span style="float:right;">
-                {% if encode == 'HTML' %}
-                  {% trans with {'%text_link%': show_text_link|raw } %}preview.card.content.type.plain{% endtrans %}
-                {% endif %}
-                {% if show_text %}
-                  {% trans with {'%html_link%': show_html_link|raw } %}preview.card.content.type.html{% endtrans %}
-                {% endif %}
-                </span>
-              {% endif %}
-
             </div>
           </div>
         {% endif %}
-
         {% if feature_scores and scores %}
-        <div class="card mb-3">
-          <div class="card-header">
-            {% trans %}preview.card.scores.title{% endtrans %}
-          </div>
-          <table class="table mb-0">
-            <thead>
-              <tr>
-                <th>{% trans %}preview.card.scores.thead.engine{% endtrans %}</th>
-                <th>{% trans %}preview.card.scores.thead.result{% endtrans %}</th>
-                <th class="d-none d-sm-table-cell">{% trans %}preview.card.scores.thead.signature{% endtrans %}</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for score in scores %}
-              <tr>
-                <td>{{ score.name }}</td>
-                <td>{{ score.score }}</td>
-                <td class="text-muted d-none d-sm-table-cell wrap">{{ score.text }}</td>
-              </tr>
-            {% else %}
-              <tr>
-                <td colspan="3" class="text-muted text-center">{% trans %}preview.card.scores.tbody.empty{% endtrans %}</td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        {% endif %}
-        {% if mail.metadata is iterable and not mail.metadata is empty %}
-        <div class="card mb-3">
-          <div class="card-header">
-            {% trans %}preview.card.metadata.title{% endtrans %}
-          </div>
-          <div class="card-body">
-            <dl class="preview-details row">
-              {% for key,value in mail.metadata %}
-                <dt class="col-sm-3">{{ key }}</dt><dd class="col-sm-9 wrap">{{ value }}</dd>
+          <div class="card mb-3">
+            <div class="card-header">
+              {% trans %}preview.card.scores.title{% endtrans %}
+            </div>
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th>{% trans %}preview.card.scores.thead.engine{% endtrans %}</th>
+                  <th>{% trans %}preview.card.scores.thead.result{% endtrans %}</th>
+                  <th class="d-none d-sm-table-cell">{% trans %}preview.card.scores.thead.signature{% endtrans %}</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for score in scores %}
+                <tr>
+                  <td>{{ score.name }}</td>
+                  <td>{{ score.score }}</td>
+                  <td class="text-muted d-none d-sm-table-cell wrap">{{ score.text }}</td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="3" class="text-muted text-center">{% trans %}preview.card.scores.tbody.empty{% endtrans %}</td>
+                </tr>
               {% endfor %}
-            </dl>
+              </tbody>
+            </table>
           </div>
-        </div>
         {% endif %}
       </div>
 

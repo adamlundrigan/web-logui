@@ -82,17 +82,17 @@ preview:
   nav:
     back: 'Back'
     report:
-      title: 'Spam classification'
+      title: 'Report'
       option:
-        fp: 'Report blocked email (FP)'
-        fpfile: 'Report blocked email (FP) with email body'
-        fn: 'Report spam (FN)'
+        fp: '...blocked email (FP)'
+        fpfile: '...blocked email (FP) with email body'
+        fn: '...spam email (FN)'
     textlog: 'Text log'
     download:
       title: 'Download'
       option:
-        modified: 'Modified'
-        original: 'Original'
+        modified: '...modified'
+        original: '...original'
     actions:
       title: 'Actions'
       delete: 'Delete'
@@ -105,18 +105,20 @@ preview:
       title: 'Details'
       fields:
         action: 'Action'
-        from: 'From'
-        to: 'To'
+        sender: 'Sender'
+        recipient: 'Recipient'
         subject: 'Subject'
-        date: 'Date'
+        date: 'Received'
         size: 'Size'
         details: 'Details'
         inqueue: 'In queue (retry %count%)'
         listener: 'Received by'
-        server: 'Server'
+        senderip: 'Sender IP'
+        senderhelo: 'Sender HELO'
         sasl: 'User'
         transport: 'Destination'
         id: 'ID'
+        tlsstarted: 'TLS has been used in receiving this message'
     scores:
       title: 'Scores'
       thead:
@@ -138,11 +140,8 @@ preview:
           title: 'Content unavailable'
           message: 'Message is not in queue or quarantine'
       source:
-        original: 'Show <a href="%original_link%">original</a>'
-        modified: 'Show <a href="%modified_link%">modified</a>'
-      type:
-        plain: 'Switch to <a href="%text_link%">plain text</a>'
-        html: 'Switch to <a href="%html_link%">HTML</a> version'
+        original: 'Show original'
+        modified: 'Show modified'
       headers:
         title: 'Headers'
         added: 'Added'

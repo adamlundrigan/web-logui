@@ -82,17 +82,17 @@ preview:
   nav:
     back: 'Tillbaka'
     report:
-      title: 'Spam-klassificering'
+      title: 'Rapportera'
       option:
-        fp: 'Rapportera blockerat meddelande (FP)'
-        fpfile: 'Rapportera blockerat meddelande (FP) med innehåll'
-        fn: 'Rapportera spam (FN)'
+        fp: '...blockerat meddelande (FP)'
+        fpfile: '...blockerat meddelande (FP) med innehåll'
+        fn: '...spam meddelande (FN)'
     textlog: 'Textlogg'
     download:
       title: 'Ladda ner'
       option:
-        modified: 'Modifierad'
-        original: 'Original'
+        modified: '...modifierad'
+        original: '...original'
     actions:
       title: 'Actions'
       delete: 'Ta bort'
@@ -105,18 +105,20 @@ preview:
       title: 'Detaljer'
       fields:
         action: 'Åtgärd'
-        from: 'Från'
-        to: 'Till'
+        sender: 'Avsändare'
+        recipient: 'Mottagare'
         subject: 'Ämne'
-        date: 'Datum'
+        date: 'Mottagen'
         size: 'Storlek'
         details: 'Detaljer'
         inqueue: 'I kö (återförsök %count%)'
         listener: 'Mottaget av'
-        server: 'Server'
+        senderip: 'Ävsändare IP'
+        senderhelo: 'Avsändare HELO'
         sasl: 'Användare'
         transport: 'Destination'
         id: 'ID'
+        tlsstarted: 'TLS har använts vid mottagande av detta brev'
     scores:
       title: 'Poäng'
       thead:
@@ -138,11 +140,8 @@ preview:
           title: 'Otillgängligt innehåll'
           message: 'Meddelande är inte i kö eller karantän'
       source:
-        original: 'Byt till <a href="%original_link%">original</a>'
-        modified: 'Byt till <a href="%modified_link%">modifierad</a>'
-      type:
-        plain: 'Byt till <a href="%text_link%">text</a>'
-        html: 'Byt till <a href="%html_link%">HTML</a>'
+        original: 'Byt till original'
+        modified: 'Byt till modifierad'
       headers:
         title: 'Meddelandehuvud'
         added: 'Tillagd'

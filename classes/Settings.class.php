@@ -47,6 +47,8 @@ class Settings
     'msgid' => 'messageid',
     'msglistener' => 'serverid',
     'msgfromserver' => 'senderip',
+    'msgsenderhelo' => 'senderhelo',
+    'msgtlsstarted' => 'tlsstarted',
     'msghelo' => 'senderhelo',
     'msgsasl' => 'saslusername',
     'msgaction' => 'action',

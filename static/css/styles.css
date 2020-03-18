@@ -117,12 +117,12 @@ dl:last-child {
 	font-family: monospace;
 }
 
-.preview-details dt {
-	margin-bottom: 0.25rem
-}
-
-.preview-details dd {
-	margin-bottom: 0;
+.card .closed {
+	height: 100px;
+	background: linear-gradient(to bottom, #fff 0%, #fff 80%, #e3e3e3 100%);
+	overflow: hidden;
+	color: #999;
+	cursor: pointer
 }
 
 .table-fixed {

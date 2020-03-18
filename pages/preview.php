@@ -221,6 +221,7 @@ $twigLocals = [
   'body'								=> $body ?: null,
   'encode'							=> $encode ?: null,
   'show_text'						=> $_GET['preview'] == 'text',
+  'show_html'						=> $_GET['preview'] == 'html' || !$_GET['preview'],
   'mail'								=> $mail,
   'scores'							=> history_parse_scores($mail) ?: null,
   'pending_action_type' => $pending_action_type,
