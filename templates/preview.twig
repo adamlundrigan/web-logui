@@ -50,7 +50,7 @@
     </ul>
     <ul class="nav navbar-nav navbar-right">
       {% if reportfp or reportfn %}
-        <li class="nav-item mr-2 dropdown">
+        <li class="nav-item dropdown">
           <a href="#" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-ban"></i>&nbsp;{% trans %}preview.nav.report.title{% endtrans %}</a>
           <div class="dropdown-menu dropdown-menu-right" role="menu">
             {% if reportfp %}<a class="dropdown-item" href="{{ app.request.uri }}&report=1&reporttype=fp">{% trans %}preview.nav.report.option.fp{% endtrans %}</a>{% endif %}
@@ -60,10 +60,10 @@
         </li>
       {% endif %}
       {% if 'preview-textlog' not in disabled_features and feature_textlog and (is_superadmin or textlog_access) %}
-        <li class="nav-item mr-2"><a class="btn btn-outline-secondary" href="?page=log&id={{ mail.id }}&index={{ index }}"><i class="far fa-file-alt"></i>&nbsp;{% trans %}preview.nav.textlog{% endtrans %}</a></li>
+        <li class="nav-item ml-2"><a class="btn btn-outline-secondary" href="?page=log&id={{ mail.id }}&index={{ index }}"><i class="far fa-file-alt"></i>&nbsp;{% trans %}preview.nav.textlog{% endtrans %}</a></li>
       {% endif %}
       {% if found_in_node and 'preview-mail-body' not in disabled_features and 'preview-mail-body-original' not in disabled_features %}
-        <li class="nav-item">
+        <li class="nav-item ml-2">
           <div class="btn-group btn-group-toggle">
             <a class="btn btn-outline-secondary {% if show_original %}active{% endif %}" href="{{ show_original_link }}">{% trans %}preview.card.content.source.original{% endtrans %}</a>
             <a class="btn btn-outline-secondary {% if not show_original %}active{% endif %}" href="{{ show_modified_link }}">{% trans %}preview.card.content.source.modified{% endtrans %}</a>
