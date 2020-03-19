@@ -113,7 +113,7 @@ preview:
         details: 'Detaljer'
         inqueue: 'I kö (återförsök %count%)'
         listener: 'Mottaget av'
-        senderip: 'Ävsändare IP'
+        senderip: 'Avsändare IP'
         senderhelo: 'Avsändare HELO'
         sasl: 'Användare'
         transport: 'Destination'
