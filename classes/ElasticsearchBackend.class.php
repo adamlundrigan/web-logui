@@ -175,6 +175,8 @@ class ElasticsearchBackend extends Backend
                   $queue = new BoolQuery();
                   $queue->add(new MatchQuery($schema['msgaction'], $filter['value']), BoolQuery::MUST);
                   $queue->add(new MatchQuery($schema['queue']['key'].'.'.$schema['msgaction'], 'DELIVER'), BoolQuery::MUST_NOT);
+                  $queue->add(new MatchQuery($schema['queue']['key'].'.'.$schema['msgaction'], 'BOUNCE'), BoolQuery::MUST_NOT);
+                  $queue->add(new MatchQuery($schema['queue']['key'].'.'.$schema['msgaction'], 'DELETE'), BoolQuery::MUST_NOT);
 
                   $boolFilter->add($queue, $boolOperator);
                 } else {
