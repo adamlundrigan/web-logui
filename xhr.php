@@ -197,7 +197,7 @@ if ($_POST['page'] == 'stats')
         $i['backgroundColor'] = $settings->getStatsLabelColor()[$k]['bg'] ?? $colorset[$color++ % count($colorset)];
         if ($settings->getStatsLabelColor()[$k]['border'])
           $i['borderColor'] = $settings->getStatsLabelColor()[$k]['border'];
-        $i['lineTension'] = 0.2;
+        $i['lineTension'] = 0.25;
         $chartdata[] = $i;
       }
 

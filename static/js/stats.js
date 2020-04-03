@@ -17,13 +17,30 @@ $(document).ready(function() {
 		});
 	}
 
-	$('#realtime-interval').on('click', function() {
-		$(this).toggleClass('active');
-		updateCharts();
-		if ($(this).hasClass('active'))
-			intervalHandler = setInterval(updateCharts, 5000);
-		else
+	$('#mode-recent').on('change', function() {
+		if ($(this).prop('checked') == true) {
+			$('#fa-recent').addClass('fa-spin');
+
+			$('#datepicker').find('input, button').each(function () {
+				$(this).prop('disabled', true);
+			});
+
+			updateCharts();
+			intervalHandler = setInterval(updateCharts, 10000);
+		}
+	});
+
+	$('#mode-interval').on('change', function() {
+		if ($(this).prop('checked') == true) {
+			$('#fa-recent').removeClass('fa-spin');
+
+			$('#datepicker').find('input, button').each(function () {
+				$(this).prop('disabled', false);
+			});
+
+			updateCharts();
 			clearInterval(intervalHandler);
+		}
 	});
 
 	$('#card-container').sortable({
@@ -36,9 +53,8 @@ $(document).ready(function() {
 	$('a.chart-add').on('click', function() {
 		var chart = $(this).parent().data('chart');
 		var type = $(this).data('type');
-		var target = targetDomain;
 
-		if (addChart(++chartId, chart, type, target))
+		if (addChart(++chartId, chart, type, ''))
 			$('#save-changes').attr('hidden', false);
 	});
 
@@ -57,28 +73,64 @@ $(document).ready(function() {
 });
 
 function addChart(id, chart, type, target = '') {
-	var duplicate = false;
-	$('#card-container').children('[id^=chart-]').map(function (i, card) {
-		if (chart == $(card).data('chart') && type == $(card).data('type') && target == $(card).data('target'))
-			duplicate = true;
-	});
-
-	if (duplicate)
-		return false;
-
+	// card & header
 	var chartElement = $('<div class="float-lg-left col-lg-6 pb-3" id="chart-'+ id +'" data-chart="'+ chart +'" data-id="'+ id +'" data-type="'+ type +'" data-target="' + target + '"></div>').appendTo("#card-container");
-	var cardElement = $('<div class="card"></div>').appendTo(chartElement);
-	var cardHeader = $('<div class="card-header" draggable="true"></div>').appendTo(cardElement);
-	var cardBodyElement = $('<div class="card-body p-3"></div>').appendTo(cardElement);
-	$('<p class="text-center text-muted"><i class="fas fa-spinner fa-2x fa-spin loading"></i></p>').appendTo(cardBodyElement);
+	var card = $('<div class="card"></div>').appendTo(chartElement);
+	var cardHeader = $('<div class="card-header" draggable="true"></div>').appendTo(card);
+	var cardHeaderRow = $('<div class="row"></div>').appendTo(cardHeader);
 
-	$('<a class="float-right text-secondary chart-close" href="#" data-id="'+ id +'"><i class="fa fa-times"></i></a>').on("click", function () {
+	var cardTitle = $('<div class="col-10 chart-title text-truncate"></div>').appendTo(cardHeaderRow);
+	var cardToolbar = $('<div class="col-2 chart-toolbar"></div>').appendTo(cardHeaderRow);
+
+	cardInputGroup = $('<div class="input-group chart-edit" style="position: absolute; top: -4px; right: 4px;" hidden></div>').appendTo(cardToolbar);
+	cardInputGroupAppend = $('<div class="input-group-append"></div>').appendTo(cardInputGroup);
+	$('<button type="button" class="btn btn-outline-secondary btn-sm" data-id="' + id + '"><i class="fa fa-check"></i></button>').on('click', function () {
+		let value = $('#chart-' + $(this).data('id')).find('.filter-value').val();
+		setChartData(
+			$(this).data('id'),
+			$('#chart-' + $(this).data('id')).data('chart'),
+			$('#chart-' + $(this).data('id')).data('type'),
+			value
+		);
+		$(chartElement).data('target', value);
+
+		$('#save-changes').attr('hidden', false);
+
+		$(cardTitle).removeClass('col-6').addClass('col-10');
+		$(cardToolbar).removeClass('col-6').addClass('col-2');
+		$('#chart-' + $(this).data('id')).find('.chart-edit').prop('hidden', true);
+		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', false);
+		$('#chart-' + $(this).data('id')).find('.btn-card-close').prop('hidden', false);
+	}).appendTo(cardInputGroupAppend);
+
+	if (typeof inputFilterOptions != 'undefined' && Array.isArray(inputFilterOptions))
+		$('<select class="custom-select custom-select-sm filter-value"><option></option>' + inputFilterOptions.map(function (option) {
+			return '<option value="' + option + '">' + option + '</option>';
+		}) + '</select>').prependTo(cardInputGroup);
+	else
+		$('<input type="text" class="form-control form-control-sm filter-value" placeholder="'+inputFilterLabel+'">').prependTo(cardInputGroup);
+
+	// chart
+	var cardBody = $('<div class="card-body p-3"></div>').appendTo(card);
+	$('<p class="text-center text-muted"><i class="fas fa-spinner fa-2x fa-spin loading"></i></p>').appendTo(cardBody);
+
+	// domain button
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-edit" data-id="' + id + '"><i class="fas fa-filter"></i></a>').on("click", function () {
+		$(cardTitle).removeClass('col-10').addClass('col-6');
+		$(cardToolbar).removeClass('col-2').addClass('col-6');
+		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', true);
+		$('#chart-' + $(this).data('id')).find('.btn-card-close').prop('hidden', true);
+		$('#chart-' + $(this).data('id')).find('.chart-edit').prop('hidden', false);
+		$('#chart-' + $(this).data('id')).find('.chart-input').focus();
+	}).prependTo(cardToolbar);
+	// close button
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary btn-card-close" href="#" data-id="'+ id +'"><i class="fa fa-times"></i></a>').on("click", function () {
 		$('#chart-' + $(this).data('id')).fadeOut('slow', function () {
 			$(this).remove();
 			$('#save-changes').attr('hidden', false);
 		});
-	}).prependTo(cardHeader);
-	$('<canvas id="chart-canvas-'+ id +'"></canvas>').appendTo(cardBodyElement);
+	}).prependTo(cardToolbar);
+	$('<canvas id="chart-canvas-'+ id +'"></canvas>').appendTo(cardBody);
 
 	setChartData(id, chart, type, target);
 
@@ -99,7 +151,8 @@ function setChartData(id, chart, type, target, dataOnly = false) {
 		'start': chartRange.start,
 		'stop': chartRange.stop,
 		'target': target,
-		'interval': $('#realtime-interval').hasClass('active') ? 'fixed_interval' : undefined
+		'mode': $('#mode-recent').prop('checked') == true ? 'fixed_interval' : undefined,
+		'interval': $('#mode-recent').prop('checked') == true ? 'fixed_interval' : undefined
 	}).done((data) => {
 		if (data.error)
 			return;
@@ -109,9 +162,9 @@ function setChartData(id, chart, type, target, dataOnly = false) {
 		if (!dataOnly) {
 			$('#chart-' + id).find('.loading').parent().remove();
 			if (data.label)
-				$('#chart-' + id).find('.card-header').append(data.label + ' - ' + data.group);
+				$('#chart-' + id).find('.chart-title').html(data.label + ' - ' + data.group);
 			if (target)
-				$('#chart-' + id).find('.card-header').append(' (' + target + ')');
+				$('#chart-' + id).find('.chart-title').append(' (' + target + ')');
 		}
 
 		if (typeof this.chartList == 'undefined')

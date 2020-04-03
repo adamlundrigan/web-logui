@@ -4,9 +4,6 @@ if (!$settings->getDisplayStats()) die("The setting display-stats isn't enabled"
 
 require_once BASE.'/inc/twig.php';
 
-if (isset($_POST['set-target']) || ($_GET['set-target']))
-  $target = $_POST['set-target'] ?? $_GET['set-target'];
-
 [$index_start, $index_stop] = valid_date_range($_GET['start'] ?? null, $_GET['stop'] ?? null);
 
 $stats = $settings->getStatsAggregations();
@@ -37,7 +34,6 @@ uasort($stats['pie'], function ($a, $b) {
 
 $twigLocals = [
   'access'      => Session::Get()->getAccess(),
-  'target' => $target,
   'index_start' => $index_start,
   'index_stop'  => $index_stop,
   'stats' => [

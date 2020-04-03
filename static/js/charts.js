@@ -119,7 +119,7 @@ function bar_chart(targetElement, labels = null, datasets = null) {
 function getUnitByInterval(interval) {
   switch (interval) {
     case 'fixed_interval':
-      return 'second';
+      return 'minute';
     case 'hour':
       return 'hour';
     case 'day':

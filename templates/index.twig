@@ -40,7 +40,7 @@
       </form>
       <ul class="nav navbar-nav mr-auto ml-md-3">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-plus"></i>&nbsp;{% trans %}index.nav.filter{% endtrans %}</a>
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="fa fa-plus"></i><span class="d-inline d-md-none d-lg-inline">&nbsp;{% trans %}index.nav.filter{% endtrans %}</span></a>
           <form method="POST">
             <div class="dropdown-menu" style="width: 400px">
               <h6 class="px-3 py-2">Search filter</h6>
@@ -81,7 +81,6 @@
         <input type="hidden" name="sort" value="{{ sortby }}">
         <input type="hidden" name="order" value="{{ sortorder }}">
         {% include 'datepicker.twig' %}
-        <button class="btn btn-outline-primary ml-2" id="update-interval"><i class="fa fa-redo-alt"></i><span class="d-inline d-md-none d-lg-inline">&nbsp;{% trans %}index.nav.refresh{% endtrans %}</span></button>
       </form>
     </div>
   </nav>

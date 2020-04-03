@@ -349,7 +349,7 @@ class ElasticsearchBackend extends Backend
         if ($param['interval'] == 'fixed_interval') {
           $start = new DateTime('now');
           $stop = new DateTime('now');
-          $start->modify('-5 minutes');
+          $start->modify('-1 hour');
         } else {
           $start = new DateTime($param['start']);
           $stop = new DateTime($param['stop']);
@@ -442,7 +442,7 @@ class ElasticsearchBackend extends Backend
       case 'histogram':
         return new DateHistogramAggregation($name ?? ++$f, $field, $opts['interval'] ?? 'day');
       case 'fixed_interval':
-          return new DateHistogramAggregation($name ?? ++$f, $field, '5s');
+        return new DateHistogramAggregation($name ?? ++$f, $field, '1m');
       default:
         return null;
     }

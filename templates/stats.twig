@@ -21,93 +21,73 @@
 {% endblock %}
 
 {% block body %}
-  <nav class="navbar navbar-expand navbar-light bg-light navbar-toolbar">
-    <form class="form-inline pt-2 pt-md-0">
-      <input type="hidden" name="page" value="stats">
-      <input type="hidden" name="start" value="{{ index_start }}">
-      <input type="hidden" name="stop" value="{{ index_stop }}">
-      <div class="input-group">
-        {% if not is_superadmin or (access.domain is defined and access.domain|length <= 10) %}
-          <select class="custom-select" name="set-target">
-            <option value=""></option>
-            {% for access in access.domain %}
-              <option value="{{ access }}">{{ access }}</option>
+  <nav class="navbar navbar-expand-md navbar-light bg-light navbar-toolbar">
+    <button class="navbar-toggler d-block d-md-none" type="button" data-toggle="collapse" data-target="#toolbar-collapse">
+      <i class="fa fa-tools"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="toolbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-chart-area"></i></a>
+          <div class="dropdown-menu" data-chart="line">
+            {% set groups = [] %}
+            {% for k, i in stats.line %}
+              {% if i.groupby is defined and i.groupby not in groups  %}
+                {% set groups = groups|merge([i.groupby]) %}
+                <h6 class="dropdown-header text-primary">{{ i.groupby }}</h6>
+              {% endif %}
+              <a class="dropdown-item chart-add" href="#" data-type="{{ k }}">{{ i.label }}</a>
             {% endfor %}
-          </select>
-        {% else %}
-          <input class="form-control" size="35" type="text" name="set-target" placeholder="{% trans %}statistics.nav.target{% endtrans %}">
-        {% endif %}
-        <div class="input-group-append">
-          <button class="btn btn-outline-primary"><i class="fa fa-plus fa-fw"></i></button>
-        </div>
-      </div>
-    </form>
-    <ul class="nav navbar-nav mr-auto">
-      <li class="nav-item dropdown ml-3">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-chart-area"></i></a>
-        <div class="dropdown-menu" data-chart="line">
-          {% set groups = [] %}
-          {% for k, i in stats.line %}
-            {% if i.groupby is defined and i.groupby not in groups  %}
-              {% set groups = groups|merge([i.groupby]) %}
-              <h6 class="dropdown-header text-primary">{{ i.groupby }}</h6>
-            {% endif %}
-            <a class="dropdown-item chart-add" href="#" data-type="{{ k }}">{{ i.label }}</a>
-          {% endfor %}
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-chart-pie"></i></a>
-        <div class="dropdown-menu" data-chart="pie">
-          {% set groups = [] %}
-          {% for k, i in stats.pie %}
-            {% if i.groupby is defined and i.groupby not in groups  %}
-              {% set groups = groups|merge([i.groupby]) %}
-              <h6 class="dropdown-header text-primary">{{ i.groupby }}</h6>
-            {% endif %}
-            <a class="dropdown-item chart-add" href="#" data-type="{{ k }}">{{ i.label }}</a>
-          {% endfor %}
-        </div>
-      </li>
-
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-chart-bar"></i></a>
-        <div class="dropdown-menu" data-chart="bar">
-          {% set groups = [] %}
-          {% for k, i in stats.bar %}
-            {% if i.groupby is defined and i.groupby not in groups  %}
-              {% set groups = groups|merge([i.groupby]) %}
-              <h6 class="dropdown-header text-primary">{{ i.groupby }}</h6>
-            {% endif %}
-            <a class="dropdown-item chart-add" href="#" data-type="{{ k }}">{{ i.label }}</a>
-          {% endfor %}
-        </div>
-      </li>
-
-      <li class="nav-item pl-2">
-        <a class="nav-link" id="save-changes" href="#" hidden><i class="far fa-save"></i>&nbsp;{% trans %}statistics.nav.savechanges{% endtrans %}</a>
-      </li>
-    </ul>
-    <form class="form-inline" action="?page=stats">
-      <input type="hidden" name="page" value="stats">
-      {% if target %}
-        <input type="hidden" name="set-target" value="{{ target }}">
-      {% endif %}
-      {% include 'datepicker.twig' %}
-      <button type="button" class="btn btn-outline-primary ml-2" id="realtime-interval"><i class="far fa-clock"></i></button>
-      <button class="btn btn-outline-primary ml-2" id="update-interval"><i class="fa fa-redo-alt"></i>&nbsp;{% trans %}statistics.nav.refresh{% endtrans %}</button>
-    </form>
-  </nav>
-  {% if target %}
-    <nav class="navbar navbar-expand navbar-light bg-light pt-0" id="target-item">
-      <ul class="nav navbar-nav">
-        <li><i class="fa fa-filter fa-fw mr-2 text-dark" title="Active filters"></i></li>
-        <li class="mr-2">
-          <span class="badge badge-pill badge-primary py-1 px-2" id="target-item-label">{{ target }}<a href="?page=stats&start={{ index_start }}&stop={{ index_stop }}" class="text-light" style="line-height: 0.25rem;"><i class="fa fa-times fa-xs pl-2"></i></a></span>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-chart-pie"></i></a>
+          <div class="dropdown-menu" data-chart="pie">
+            {% set groups = [] %}
+            {% for k, i in stats.pie %}
+              {% if i.groupby is defined and i.groupby not in groups  %}
+                {% set groups = groups|merge([i.groupby]) %}
+                <h6 class="dropdown-header text-primary">{{ i.groupby }}</h6>
+              {% endif %}
+              <a class="dropdown-item chart-add" href="#" data-type="{{ k }}">{{ i.label }}</a>
+            {% endfor %}
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-chart-bar"></i></a>
+          <div class="dropdown-menu" data-chart="bar">
+            {% set groups = [] %}
+            {% for k, i in stats.bar %}
+              {% if i.groupby is defined and i.groupby not in groups  %}
+                {% set groups = groups|merge([i.groupby]) %}
+                <h6 class="dropdown-header text-primary">{{ i.groupby }}</h6>
+              {% endif %}
+              <a class="dropdown-item chart-add" href="#" data-type="{{ k }}">{{ i.label }}</a>
+            {% endfor %}
+          </div>
+        </li>
+        <li class="nav-item pl-2">
+          <a class="nav-link" id="save-changes" href="#" hidden><i class="far fa-save"></i>&nbsp;{% trans %}statistics.nav.savechanges{% endtrans %}</a>
         </li>
       </ul>
-    </nav>
-  {% endif %}
+      <ul class="navbar-nav">
+        <li class="nav-item py-2 py-md-0">
+          <div class="btn-group btn-group-toggle mr-2" data-toggle="buttons">
+            <label class="btn btn-outline-secondary">
+              <input type="radio" id="mode-recent" name="set-mode"><i class="fas fa-sync-alt fa-fw" id="fa-recent"></i>&nbsp;Recent</button>
+            </label>
+            <label class="btn btn-outline-secondary active">
+              <input type="radio" id="mode-interval" name="set-mode"><i class="far fa-calendar-minus fa-fw"></i>&nbsp;Interval</button>
+            </label>
+          </div>
+        </li>
+      </ul>
+      <form class="form-inline" action="?page=stats">
+        <input type="hidden" name="page" value="stats">
+        {% include 'datepicker.twig' %}
+      </form>
+    </div>
+  </nav>
   <div class="container-fluid pt-3" id="card-container"></div>
   <script>
     var containerName;
@@ -116,11 +96,14 @@
     {% else %}
       containerName = "{{ access[0] }}";
     {% endif %}
-    var targetDomain = "{{ target }}";
     var chartRange = {
       start: "{{ index_start }}",
       stop: "{{ index_stop }}"
     };
     var defaultView = {{ default_view|json_encode|raw }};
+    var inputFilterLabel = "{% trans %}statistics.nav.target{% endtrans %}";
+    {% if not is_superadmin or (access.domain is defined and access.domain|length <= 10) %}
+      var inputFilterOptions = {{ access.domain|json_encode|raw }}
+    {% endif %}
   </script>
 {% endblock %}
