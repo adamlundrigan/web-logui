@@ -80,8 +80,8 @@ function addChart(id, chart, type, target = '', width = '') {
 	var cardHeader = $('<div class="card-header" draggable="true"></div>').appendTo(card);
 	var cardHeaderRow = $('<div class="row"></div>').appendTo(cardHeader);
 
-	var cardTitle = $('<div class="col-10 chart-title text-truncate"></div>').appendTo(cardHeaderRow);
-	var cardToolbar = $('<div class="col-2 chart-toolbar"></div>').appendTo(cardHeaderRow);
+	var cardTitle = $('<div class="col-9 chart-title text-truncate"></div>').appendTo(cardHeaderRow);
+	var cardToolbar = $('<div class="col-3 chart-toolbar"></div>').appendTo(cardHeaderRow);
 
 	cardInputGroup = $('<div class="input-group chart-edit" style="position: absolute; top: -4px; right: 4px;" hidden></div>').appendTo(cardToolbar);
 	cardInputGroupAppend = $('<div class="input-group-append"></div>').appendTo(cardInputGroup);
@@ -97,8 +97,8 @@ function addChart(id, chart, type, target = '', width = '') {
 
 		$('#save-changes').attr('hidden', false);
 
-		$(cardTitle).removeClass('col-6').addClass('col-10');
-		$(cardToolbar).removeClass('col-6').addClass('col-2');
+		$(cardTitle).removeClass('col-6').addClass('col-9');
+		$(cardToolbar).removeClass('col-6').addClass('col-3');
 		$('#chart-' + $(this).data('id')).find('.chart-edit').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', false);
 		$('#chart-' + $(this).data('id')).find('.btn-card-close').prop('hidden', false);
@@ -118,8 +118,8 @@ function addChart(id, chart, type, target = '', width = '') {
 
 	// domain button
 	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-edit" data-id="' + id + '"><i class="fas fa-filter"></i></a>').on("click", function () {
-		$(cardTitle).removeClass('col-10').addClass('col-6');
-		$(cardToolbar).removeClass('col-2').addClass('col-6');
+		$(cardTitle).removeClass('col-9').addClass('col-6');
+		$(cardToolbar).removeClass('col-3').addClass('col-6');
 		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.btn-card-close').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.btn-card-expand').prop('hidden', true);
