@@ -86,11 +86,11 @@ if ($_POST['page'] == 'stats')
   $dt_start = new DateTime($start);
   $dt_stop = new DateTime($stop);
   $days = $dt_stop->diff($dt_start)->format('%a');
-  if ($days <= 2)
+  if ($days <= 3)
     $interval = 'hour';
-  else if ($days <= 62)
+  else if ($days <= 92)
     $interval = 'day';
-  else if ($days > 62 && $days < 365)
+  else if ($days > 92 && $days < 547)
     $interval = 'month';
   else
     $interval = 'year';

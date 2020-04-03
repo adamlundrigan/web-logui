@@ -349,7 +349,7 @@ class ElasticsearchBackend extends Backend
         if ($param['interval'] == 'fixed_interval') {
           $start = new DateTime('now');
           $stop = new DateTime('now');
-          $start->modify('-1 hour');
+          $start->modify('-2 hour');
         } else {
           $start = new DateTime($param['start']);
           $stop = new DateTime($param['stop']);

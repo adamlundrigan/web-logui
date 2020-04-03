@@ -53,6 +53,9 @@ function time_chart(targetElement, datasets = null, interval = null) {
       elements: {
         line: {
           fill: '-1'
+        },
+        point: {
+          radius: 1.5
         }
       },
       scales: {

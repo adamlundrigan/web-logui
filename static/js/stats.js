@@ -7,7 +7,7 @@ $(document).ready(function() {
 	if (typeof localStore === 'string') {
 		var charts = JSON.parse(localStore);
 		charts.map(function (i) {
-			addChart(++chartId, i.chart, i.type, i.target);
+			addChart(++chartId, i.chart, i.type, i.target, i.width);
 		});
 	}
 
@@ -64,7 +64,8 @@ $(document).ready(function() {
 			store.push({
 				chart: $(card).data('chart'),
 				type: $(card).data('type'),
-				target: $(card).data('target') ? $(card).data('target') : undefined
+				target: $(card).data('target') ? $(card).data('target') : undefined,
+				width: $(card).data('width') ? $(card).data('width') : undefined
 			});
 		});
 		localStorage.setItem('charts-view-' + containerName, JSON.stringify(store));
@@ -72,9 +73,9 @@ $(document).ready(function() {
 	});
 });
 
-function addChart(id, chart, type, target = '') {
+function addChart(id, chart, type, target = '', width = '') {
 	// card & header
-	var chartElement = $('<div class="float-lg-left col-lg-6 pb-3" id="chart-'+ id +'" data-chart="'+ chart +'" data-id="'+ id +'" data-type="'+ type +'" data-target="' + target + '"></div>').appendTo("#card-container");
+	var chartElement = $('<div class="float-lg-left ' + (width == 'full' ? 'col-12' : 'col-lg-6') + ' pb-3" id="chart-'+ id +'" data-chart="'+ chart +'" data-id="'+ id +'" data-type="'+ type +'" data-target="' + target + '" data-width="' + width + '"></div>').appendTo("#card-container");
 	var card = $('<div class="card"></div>').appendTo(chartElement);
 	var cardHeader = $('<div class="card-header" draggable="true"></div>').appendTo(card);
 	var cardHeaderRow = $('<div class="row"></div>').appendTo(cardHeader);
@@ -101,6 +102,7 @@ function addChart(id, chart, type, target = '') {
 		$('#chart-' + $(this).data('id')).find('.chart-edit').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', false);
 		$('#chart-' + $(this).data('id')).find('.btn-card-close').prop('hidden', false);
+		$('#chart-' + $(this).data('id')).find('.btn-card-expand').prop('hidden', false);
 	}).appendTo(cardInputGroupAppend);
 
 	if (typeof inputFilterOptions != 'undefined' && Array.isArray(inputFilterOptions))
@@ -120,16 +122,27 @@ function addChart(id, chart, type, target = '') {
 		$(cardToolbar).removeClass('col-2').addClass('col-6');
 		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.btn-card-close').prop('hidden', true);
+		$('#chart-' + $(this).data('id')).find('.btn-card-expand').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.chart-edit').prop('hidden', false);
 		$('#chart-' + $(this).data('id')).find('.chart-input').focus();
 	}).prependTo(cardToolbar);
+	// expand button
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-expand"><i class="fa fa-expand"></button>').on('click', function () {
+		$(chartElement).data('width', $(chartElement).data('width') == 'full' ? '' : 'full');
+		if ($(chartElement).data('width') == 'full')
+			$(chartElement).removeClass('col-lg-6').addClass('col-12');
+		else
+			$(chartElement).removeClass('col-12').addClass('col-lg-6');
+		$('#save-changes').attr('hidden', false);
+	}).prependTo(cardToolbar);
 	// close button
-	$('<button type="button" class="btn btn-link p-0 float-right text-secondary btn-card-close" href="#" data-id="'+ id +'"><i class="fa fa-times"></i></a>').on("click", function () {
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary btn-card-close" data-id="'+ id +'"><i class="fa fa-times"></i></a>').on("click", function () {
 		$('#chart-' + $(this).data('id')).fadeOut('slow', function () {
 			$(this).remove();
 			$('#save-changes').attr('hidden', false);
 		});
 	}).prependTo(cardToolbar);
+
 	$('<canvas id="chart-canvas-'+ id +'"></canvas>').appendTo(cardBody);
 
 	setChartData(id, chart, type, target);
