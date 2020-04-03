@@ -341,8 +341,8 @@ class ElasticsearchBackend extends Backend
       if (!$aggregation)
         return [];
 
-        // time zone
-        $query_timezone = [];
+      // time zone
+      $query_timezone = [];
 
       // range
       if ($param['start'] && $param['stop']) {
@@ -440,9 +440,15 @@ class ElasticsearchBackend extends Backend
       case 'avg':
         return new AvgAggregation($name ?? ++$f, $field);
       case 'histogram':
-        return new DateHistogramAggregation($name ?? ++$f, $field, $opts['interval'] ?? 'day');
+        $agg = new DateHistogramAggregation($name ?? ++$f, $field, $opts['interval'] ?? 'day');
+        if (isset($_SESSION['timezone_utc']))
+          $agg->addParameter('time_zone', trim($_SESSION['timezone_utc']));
+        return $agg;
       case 'fixed_interval':
-        return new DateHistogramAggregation($name ?? ++$f, $field, '1m');
+        $agg = new DateHistogramAggregation($name ?? ++$f, $field, '1m');
+        if (isset($_SESSION['timezone_utc']))
+          $agg->addParameter('time_zone', trim($_SESSION['timezone_utc']));
+        return $agg;
       default:
         return null;
     }
