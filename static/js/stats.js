@@ -75,7 +75,7 @@ $(document).ready(function() {
 
 function addChart(id, chart, type, target = '', width = '') {
 	// card & header
-	var chartElement = $('<div class="float-lg-left ' + (width == 'full' ? 'col-12' : 'col-lg-6') + ' pb-3" id="chart-'+ id +'" data-chart="'+ chart +'" data-id="'+ id +'" data-type="'+ type +'" data-target="' + target + '" data-width="' + width + '"></div>').appendTo("#card-container");
+	var chartElement = $('<div class="float-lg-left ' + (width == 'full' ? 'col-12' : 'col-lg-6') + ' pb-3" id="chart-' + id + '" data-chart="' + chart + '" data-id="' + id + '" data-type="' + type + '" data-target="' + target + '" data-width="' + width + '"></div>').appendTo("#card-container");
 	var card = $('<div class="card"></div>').appendTo(chartElement);
 	var cardHeader = $('<div class="card-header" draggable="true"></div>').appendTo(card);
 	var cardHeaderRow = $('<div class="row"></div>').appendTo(cardHeader);
@@ -110,7 +110,7 @@ function addChart(id, chart, type, target = '', width = '') {
 			return '<option value="' + option + '">' + option + '</option>';
 		}) + '</select>').prependTo(cardInputGroup);
 	else
-		$('<input type="text" class="form-control form-control-sm filter-value" placeholder="'+inputFilterLabel+'">').prependTo(cardInputGroup);
+		$('<input type="text" class="form-control form-control-sm filter-value" placeholder="' + inputFilterLabel + '">').prependTo(cardInputGroup);
 
 	// chart
 	var cardBody = $('<div class="card-body p-3"></div>').appendTo(card);
@@ -136,14 +136,14 @@ function addChart(id, chart, type, target = '', width = '') {
 		$('#save-changes').attr('hidden', false);
 	}).prependTo(cardToolbar);
 	// close button
-	$('<button type="button" class="btn btn-link p-0 float-right text-secondary btn-card-close" data-id="'+ id +'"><i class="fa fa-times"></i></a>').on("click", function () {
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary btn-card-close" data-id="' + id + '"><i class="fa fa-times"></i></a>').on("click", function () {
 		$('#chart-' + $(this).data('id')).fadeOut('slow', function () {
 			$(this).remove();
 			$('#save-changes').attr('hidden', false);
 		});
 	}).prependTo(cardToolbar);
 
-	$('<canvas id="chart-canvas-'+ id +'"></canvas>').appendTo(cardBody);
+	$('<canvas id="chart-canvas-' + id + '"></canvas>').appendTo(cardBody);
 
 	setChartData(id, chart, type, target);
 

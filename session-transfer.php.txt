@@ -86,7 +86,22 @@ if (!isset($_GET['username']))
 
 session_start();
 $_SESSION['timezone'] = isset($_GET['timezone']) ? $_GET['timezone'] : 0;
-$_SESSION['timezone_utc'] = isset($_GET['timezone_utc']) ? $_GET['timezone_utc'] : null;
+// convert tz min offset to ISO 8601 UTC
+if (isset($_GET['timezone']) && intval($_GET['timezone'])) {
+  $tz = intval($_GET['timezone']);
+  $tzoffset = [
+    'hours' => sprintf('%02d' ,(int)abs($tz / 60)),
+    'minutes' => sprintf('%02d', abs($tz % 60))
+  ];
+  $tzformat = '';
+  if ($tz < 0)
+    $tzformat = '+'.$tzoffset['hours'].':'.$tzoffset['minutes'];
+  else if ($tz > 0)
+    $tzformat = '-'.$tzoffset['hours'].':'.$tzoffset['minutes'];
+  else
+    $tzformat = 'Z';
+  $_SESSION['timezone_utc'] = $tzformat;
+}
 $_SESSION['username'] = $_GET['username'];
 $_SESSION['source'] = 'external';
 $_SESSION['access'] = isset($_POST['access']) ? $_POST['access'] : array('mail' => array($_GET['username']));
