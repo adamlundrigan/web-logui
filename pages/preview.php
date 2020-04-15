@@ -246,7 +246,8 @@ $twigLocals = [
   'textlog_access'      => Session::Get()->checkTextlogAccess(),
   'reportfp'            => $reportfp,
   'reportfn'            => $reportfn,
-  'errors'              => $errors
+  'errors'              => $errors,
+  'msgts'               => $mail->msgts0 - $_SESSION['timezone'] * 60
 ];
 
 if ($settings->getDisplayTextlog() && $mail->msgid) {

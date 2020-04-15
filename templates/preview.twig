@@ -95,7 +95,7 @@
               <i class="fa fa-lock float-right text-muted" title="{% trans %}preview.card.details.fields.tlsstarted{% endtrans %}"></i>
             {% endif %}
             <dl>
-              <dt>{% trans %}preview.card.details.fields.date{% endtrans %}</dt><dd>{{ time|date('Y-m-d H:i:s') }}</dd>
+              <dt>{% trans %}preview.card.details.fields.date{% endtrans %}</dt><dd>{{ msgts|date('Y-m-d H:i:s') }}</dd>
               {% if listener %}
                 <dt>{% trans %}preview.card.details.fields.listener{% endtrans %}</dt><dd>{{ listener }}</dd>
               {% endif %}
