@@ -53,6 +53,24 @@ $(document).ready(function() {
       label: 'Metadata',
       name: 'metadata',
       operator: ['exact', 'contains', 'not']
+    },
+    {
+      label: 'RPD score',
+      name: 'rpdscore',
+      operator: ['exact', 'not'],
+      type: 'select',
+      options: [
+        'spam',
+        'bulk',
+        'valid-bulk',
+        'suspect',
+        'non-spam'
+      ]
+    },
+    {
+      label: 'SA score',
+      name: 'sascore',
+      operator: ['=', '<=', '>=', '<', '>']
     }
   ];
 
@@ -80,7 +98,7 @@ $(document).ready(function() {
         );
       });
 
-      if (field.name == 'action') {
+      if (field.type == 'select') {
         $('#filter-value-field').html('<select class="custom-select" id="filter-value" name="filter-value"></select');
         field.options.map(function (option) {
           $('#filter-value').append('<option value="' + option + '">' + option + '</option>');

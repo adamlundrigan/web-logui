@@ -186,6 +186,43 @@ class ElasticsearchBackend extends Backend
               case 'metadata':
                 $boolFilter->add(new MultiMatchQuery([$schema['metadata'].'.*'], $filter['value'], ['operator' => $operator]), $boolOperator);
                 break;
+              case 'rpdscore':
+                switch ($filter['value']) {
+                  case 'spam':
+                    $score = 100;
+                    break;
+                  case 'bulk':
+                    $score = 50;
+                    break;
+                  case 'valid-bulk':
+                    $score = 40;
+                    break;
+                  case 'suspect':
+                    $score = 10;
+                    break;
+                  default:
+                    $score = 0;
+                }
+                $boolFilter->add(new MatchQuery($schema['score_rpd'], $score, ['operator' => $operator]), $boolOperator);
+                break;
+              case 'sascore':
+                if ($filter['operator'] == '=') {
+                  $sa = new MatchQuery($schema['scores']['key'].'.'.$schema['scores']['value']['sa'], $filter['value']);
+                } else {
+                  $range = [];
+                  if ($filter['operator'] == '<')
+                    $range += ['lt' => $filter['value']];
+                  else if ($filter['operator'] == '<=')
+                    $range += ['lte' => $filter['value']];
+                  else if ($filter['operator'] == '>')
+                    $range += ['gt' => $filter['value']];
+                  else if ($filter['operator']  == '>=')
+                    $range += ['gte' => $filter['value']];
+
+                  $sa = new RangeQuery($schema['scores']['key'].'.'.$schema['scores']['value']['sa'], $range);
+                }
+                $boolFilter->add($sa, $boolOperator);
+                break;
               default:
                 continue;
             }

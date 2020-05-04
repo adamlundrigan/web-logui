@@ -76,8 +76,8 @@ if (isset($_GET['unsetfilter'])) {
   $_SESSION['filters'] = $filters;
 }
 
-$validFields = ['messageid', 'subject', 'from', 'to', 'remoteip', 'status', 'action', 'metadata'];
-$validOperators = ['exact', 'contains', 'not'];
+$validFields = ['messageid', 'subject', 'from', 'to', 'remoteip', 'status', 'action', 'metadata', 'rpdscore', 'sascore'];
+$validOperators = ['exact', 'contains', 'not', '=', '<=', '>=', '<', '>'];
 
 if (isset($_POST['filter-field']) && isset($_POST['filter-operator']) && isset($_POST['filter-value'])) {
   if (in_array($_POST['filter-field'], $validFields) && in_array($_POST['filter-operator'], $validOperators)) {
