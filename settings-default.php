@@ -32,8 +32,11 @@
  * The purpose of this database is to store all necessary pending actions on emails
  * and run them with the provide cron script
  *      * * * * * /usr/bin/php /var/www/html/web-logui/cron.php.txt pending
+ *
+ * Use an absolute path to the database, with read and write permissions for the
+ * user running the web server
  */
-//$settings['database']['dsn'] = 'sqlite:/tmp/web-logoui.db';
+//$settings['database']['dsn'] = 'sqlite:/tmp/web-logui.db';
 
 /*
  * Generic settings
