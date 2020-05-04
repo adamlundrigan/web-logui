@@ -95,8 +95,16 @@
       {% endif %}
       {% for field, i in filters %}
         {% for filter in i %}
+          {% if filter.operator == 'contains' %}
+            {% set operator = '~' %}
+          {% elseif filter.operator in ['=', '<=', '>=', '<', '>'] %}
+            {% set operator = (' '~filter.operator) %}
+          {% else %}
+            {% set operator = ':' %}
+          {% endif %}
           <li class="mr-2">
-            <span class="badge badge-pill badge-secondary py-1 px-2">{{ field }}{% if filter.operator == 'not' %}&nbsp;(NOT){% endif %}{% if filter.operator == 'contains' %}~{% else %}:{% endif %}&nbsp;{{ filter.value }}<a href="?page=index&size={{ size }}&start={{ index_start }}&stop={{ index_stop }}&search={{ search }}&unsetfilter={{ filter.id }}" class="text-light" style="line-height: 0.25rem;"><i class="fa fa-times fa-xs pl-2"></i></a></span>
+            <span class="badge badge-pill badge-secondary py-1 px-2">
+              {{ field }}{% if filter.operator == 'not' %}&nbsp;(NOT){% endif %}{{ operator }}&nbsp;{{ filter.value }}<a href="?page=index&size={{ size }}&start={{ index_start }}&stop={{ index_stop }}&search={{ search }}&unsetfilter={{ filter.id }}" class="text-light" style="line-height: 0.25rem;"><i class="fa fa-times fa-xs pl-2"></i></a></span>
           </li>
         {% endfor %}
       {% endfor %}
