@@ -21,11 +21,11 @@ Installation
 
 Halon remote logging to Elasticsearch
 ---
-In order to start logging to Elasticsearch, please follow the [Remote logging to Elasticsearch](https://support.halon.io/hc/en-us/articles/115005513365) guide on our knowledge base.
+In order to start logging to Elasticsearch, please see our [Remote logging to Elasticsearch](https://support.halon.io/hc/en-us/articles/115005513365) article.
 
 The implementation code is available in our [code repository](https://github.com/halon/hsl-examples/tree/master/logging/elasticsearch).
 
 Halon remote logging to Logstash
 ---
 
-To enable the textlog feature, please refer to our [Remote syslog to Logstash](https://support.halon.io/hc/en-us/articles/360000700065) article.
+To enable the textlog feature, please see our [Remote syslog to Logstash](https://support.halon.io/hc/en-us/articles/360000700065) article.
