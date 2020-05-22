@@ -30,7 +30,14 @@ index:
         6: 'Last 60 days'
         7: 'Last 6 months'
         8: 'Last 24 hours'
-    exportcsv: 'Export CSV'
+    exportcsv: 'Export'
+    views:
+        title: 'Views'
+        dropdown:
+          save: 'Save view...'
+          delete: 'Delete selected view'
+          stored: 'Stored views'
+          empty: 'Empty'
   error:
     message: 'Some messages might not be available at the moment due to maintenance.'
     debug: 'Diagnostic information'

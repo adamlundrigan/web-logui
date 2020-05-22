@@ -76,23 +76,33 @@ if (isset($_GET['unsetfilter'])) {
   $_SESSION['filters'] = $filters;
 }
 
-$validFields = ['messageid', 'subject', 'from', 'to', 'remoteip', 'status', 'action', 'metadata', 'rpdscore', 'sascore'];
-$validOperators = ['exact', 'contains', 'not', '=', '<=', '>=', '<', '>'];
-
 if (isset($_POST['filter-field']) && isset($_POST['filter-operator']) && isset($_POST['filter-value'])) {
-  if (in_array($_POST['filter-field'], $validFields) && in_array($_POST['filter-operator'], $validOperators)) {
+  addFilter($_POST['filter-field'], $_POST['filter-operator'], $_POST['filter-value']);
+} else if (isset($_POST['multifilter']) && is_array($_POST['multifilter']['items'])) {
+  $_SESSION['filters'] = [];
+  $active_view_id = $_POST['multifilter']['id'];
+  foreach ($_POST['multifilter']['items'] as $filter) {
+    if (isset($filter['field']) && isset($filter['operator']) && isset($filter['value']))
+      addFilter($filter['field'], $filter['operator'], $filter['value']);
+  }
+}
+
+function addFilter($field, $operator, $value) {
+  $valid_fields = ['messageid', 'subject', 'from', 'to', 'remoteip', 'status', 'action', 'metadata', 'rpdscore', 'sascore'];
+  $valid_operators = ['exact', 'contains', 'not', '=', '<=', '>=', '<', '>'];
+  if (in_array($field, $valid_fields) && in_array($operator, $valid_operators)) {
     $duplicate = false;
-    foreach ($_SESSION['filters'][$_POST['filter-field']] ?? [] as $f) {
-      if ($f['operator'] == $_POST['filter-operator'] && $f['value'] == $_POST['filter-value'])
+    foreach ($_SESSION['filters'][$field] ?? [] as $f) {
+      if ($f['operator'] == $operator && $f['value'] == $value)
         $duplicate = true;
     }
 
     if (!$duplicate) {
       $_SESSION['filters-id'] = !isset($_SESSION['filters-id']) ? 1 : ++$_SESSION['filters-id'];
-      $_SESSION['filters'][$_POST['filter-field']][] = [
+      $_SESSION['filters'][$field][] = [
         'id' => $_SESSION['filters-id'],
-        'operator' => $_POST['filter-operator'],
-        'value' => $_POST['filter-value']
+        'operator' => $operator,
+        'value' => $value
       ];
     }
   }
@@ -242,6 +252,7 @@ $twigLocals = [
   'filters'                   => $_SESSION['filters'] ?? [],
   'sortby'                    => $param['sort'],
   'sortorder'                 => $param['sortorder'],
+  'active_view_id'            => $active_view_id ?? false,
   'table_columns'             => $settings->getDisplayIndexColumns()
 ];
 

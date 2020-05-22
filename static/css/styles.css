@@ -1,5 +1,5 @@
 /* Font size */
-body, p, a, button, label, .form-control, .input-group-text, .custom-select, .datepicker {
+body, p, a, button, label, .form-control, .input-group-text, .custom-select, .datepicker, .dropdown-menu {
   font-size: 0.875rem !important;
 }
 

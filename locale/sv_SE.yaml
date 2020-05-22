@@ -30,7 +30,14 @@ index:
         6: 'De senaste 60 dagarna'
         7: 'De senaste 6 månaderna'
         8: 'De senaste 24 timmarna'
-    exportcsv: 'Exportera CSV'
+    exportcsv: 'Exportera'
+    views:
+        title: 'Vyer'
+        dropdown:
+          save: 'Spara vy...'
+          delete: 'Ta bort vald vy'
+          stored: 'Sparade vyer'
+          empty: 'Tomt'
   error:
     message: 'Vissa meddelanden kan vara otillgängliga för tillfället, beroende på underhåll.'
     debug: 'Diagnostisk information'

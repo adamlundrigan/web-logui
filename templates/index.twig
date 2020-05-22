@@ -32,7 +32,7 @@
         <input type="hidden" name="sort" value="{{ sortby }}">
         <input type="hidden" name="order" value="{{ sortorder }}">
         <div class="input-group">
-          <input type="text" class="form-control" id="add-filter-text" name="search" size="35" placeholder="{% trans %}index.nav.search.input{% endtrans %}">
+          <input type="text" class="form-control" id="add-filter-text" name="search" size="31" placeholder="{% trans %}index.nav.search.input{% endtrans %}">
           <div class="input-group-append">
             <button type="submit" class="btn btn-outline-primary"><i class="fa fa-search fa-fw"></i><span class="d-inline d-md-none d-lg-inline"></span></button>
           </div>
@@ -70,6 +70,19 @@
             </div>
           </form>
         </li>
+        <li class="nav-item dropdown">
+          <form id="multifilter-form" method="POST" action="?page=index">
+          </form>
+          <input type="hidden" value="{{ filters|json_encode }}" id="store-value">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"><i class="far fa-eye"></i><span class="d-inline d-md-none d-lg-inline">&nbsp;{% trans %}index.nav.views.title{% endtrans %}</span></a>
+          <div class="dropdown-menu" id="storage-views" style="max-width: 250px;">
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#view-modal"><i class="far fa-save"></i>&nbsp;&nbsp;{% trans %}index.nav.views.dropdown.save{% endtrans %}</a>
+            <a class="dropdown-item {% if not active_view_id %}disabled{% endif %}" href="#" id="btn-delete-view" data-id="{{ active_view_id }}"><i class="far fa-trash-alt"></i>&nbsp;&nbsp;{% trans %}index.nav.views.dropdown.delete{% endtrans %}</a>
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">{% trans %}index.nav.views.dropdown.stored{% endtrans %}</h6>
+            <span class="dropdown-item-text text-muted view-item">{% trans %}index.nav.views.dropdown.empty{% endtrans %}</span>
+          </div>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="#" data-toggle="modal" data-target="#exportbuilder"><i class="fa fa-download"></i><span class="d-inline d-md-none d-lg-inline">&nbsp;{% trans %}index.nav.exportcsv{% endtrans %}</span></a>
         </li>
@@ -87,7 +100,7 @@
   {% if not filters is empty or not search is empty %}
   <nav class="navbar navbar-expand navbar-light bg-light pt-0" id="filter-items">
     <ul class="nav navbar-nav">
-      <li><i class="fa fa-filter fa-fw mr-2 text-dark" title="Active filters"></i></li>
+      <li class="nav-item mr-2"><i class="fa fa-filter fa-fw text-dark" title="Active filters"></i></li>
       {% if not search is empty %}
       <li class="mr-2">
         <span class="badge badge-pill badge-primary py-1 px-2">Text search: {{ search }}<a href="?page=index&size={{ size }}&start={{ index_start }}&stop={{ index_stop }}" class="text-light" style="line-height: 0.25rem;"><i class="fa fa-times fa-xs pl-2"></i></a></span>
@@ -352,6 +365,31 @@
       </p>
     </p>
     {% endif %}
+  </div>
+
+
+  <div class="modal fade" id="view-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          Save active view
+        </div>
+        <form id="view-modal-form" action='#'>
+          <div class="modal-body">
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Name</label>
+              <div class="col-sm-10">
+                <input type="input" class="form-control" id="view-modal-name">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="button" class="btn btn-outline-secondary" data-dismiss="modal" value="Close">
+            <input type="submit" class="btn btn-primary" value="Save">
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <div class="modal fade" id="exportbuilder">
