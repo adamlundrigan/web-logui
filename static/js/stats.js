@@ -87,7 +87,7 @@ function addChart(id, chart, type, target = '', width = '') {
 	cardInputGroup = $('<div class="input-group chart-edit" style="position: absolute; top: -4px; right: 4px;" hidden></div>').appendTo(cardToolbar);
 	cardInputGroupAppend = $('<div class="input-group-append"></div>').appendTo(cardInputGroup);
 	$('<button type="button" class="btn btn-outline-secondary btn-sm" data-id="' + id + '"><i class="fa fa-check"></i></button>').on('click', function () {
-		let value = $('#chart-' + $(this).data('id')).find('.filter-value').val();
+		var value = $('#chart-' + $(this).data('id')).find('.filter-value').val();
 		setChartData(
 			$(this).data('id'),
 			$('#chart-' + $(this).data('id')).data('chart'),
@@ -133,7 +133,7 @@ function addChart(id, chart, type, target = '', width = '') {
 	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-export" title="Export to CSV"><i class="fa fa-file-download"></i></button>').on('click', function () {
 		var data = chartListData[id];
 		if (data) {
-			let csvExport = 'data:text/csv;charset=utf-8,';
+			var csvExport = 'data:text/csv;charset=utf-8,';
 			csvExport += '"' + data.label + ' - ' + data.group + ' (' + chartRange.start + ' - ' + chartRange.stop + ')' + '"' + "\n";
 			var labels = '';
 			var rows = [];
@@ -157,9 +157,9 @@ function addChart(id, chart, type, target = '', width = '') {
 			});
 			csvExport += labels.replace(/\,$/, '') + "\n";
 			csvExport += rows.map(row => {
-				val = '';
+				var val = '';
 				if (chart == 'line')
-					var val = row.t + ',' + row.y;
+					val = row.t + ',' + row.y;
 				else
 					val = row;
 				return val.replace(/\,$/, '');
