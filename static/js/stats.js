@@ -164,7 +164,12 @@ function addChart(id, chart, type, target = '', width = '') {
 					val = row;
 				return val.replace(/\,$/, '');
 			}).join("\n");
-			window.open(encodeURI(csvExport), '_blank');
+			var download = document.createElement('a');
+			download.setAttribute('href', encodeURI(csvExport));
+			download.setAttribute('download', 'export.csv');
+			document.body.appendChild(download);
+			download.click();
+			download.remove();
 		}
 	}).prependTo(cardToolbar);
 	// expand button
