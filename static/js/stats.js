@@ -145,11 +145,11 @@ function addChart(id, chart, type, target = '', width = '') {
 						if (typeof rows[row] == 'undefined')
 							rows[row] = { t: 0, y: '' };
 						var day = moment(hit.t);
-						rows[row] = { t: day.format('MMM D, YYYY, hh:mm:SS A'), y: rows[row].y + hit.y + ',' };
+						rows[row] = { t: day.format('"MMM D, YYYY, hh:mm:SS A"'), y: rows[row].y + hit.y + ',' };
 					} else {
 						if (typeof rows[row] == 'undefined')
 							rows[row] = '';
-						rows[row] += [data.labels[row], hit].join(',') + ',';
+						rows[row] += ['"' + data.labels[row] + '"', hit].join(',') + ',';
 					}
 				});
 			});
@@ -157,7 +157,7 @@ function addChart(id, chart, type, target = '', width = '') {
 			csvExport += rows.map(row => {
 				val = '';
 				if (chart == 'line')
-					var val = '"' + row.t + '"' + ',' + row.y;
+					var val = row.t + ',' + row.y;
 				else
 					val = row;
 				return val.replace(/\,$/, '');
