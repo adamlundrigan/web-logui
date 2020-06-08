@@ -104,6 +104,7 @@ function addChart(id, chart, type, target = '', width = '') {
 		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', false);
 		$('#chart-' + $(this).data('id')).find('.btn-card-close').prop('hidden', false);
 		$('#chart-' + $(this).data('id')).find('.btn-card-expand').prop('hidden', false);
+		$('#chart-' + $(this).data('id')).find('.btn-card-export').prop('hidden', false);
 	}).appendTo(cardInputGroupAppend);
 
 	if (typeof inputFilterOptions != 'undefined' && Array.isArray(inputFilterOptions))
@@ -124,11 +125,12 @@ function addChart(id, chart, type, target = '', width = '') {
 		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.btn-card-close').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.btn-card-expand').prop('hidden', true);
+		$('#chart-' + $(this).data('id')).find('.btn-card-export').prop('hidden', true);
 		$('#chart-' + $(this).data('id')).find('.chart-edit').prop('hidden', false);
 		$('#chart-' + $(this).data('id')).find('.chart-input').focus();
 	}).prependTo(cardToolbar);
 	// export button
-	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2" title="Export to CSV"><i class="fa fa-file-download"></i></button>').on('click', function () {
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-export" title="Export to CSV"><i class="fa fa-file-download"></i></button>').on('click', function () {
 		var data = chartListData[id];
 		if (data) {
 			let csvExport = 'data:text/csv;charset=utf-8,';
