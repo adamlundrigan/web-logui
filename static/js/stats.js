@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	var chartId = 0;
 	var chartList = [];
+	var chartListData = [];
 	var intervalHandler = null;
 
 	var localStore = localStorage.getItem('charts-view-' + containerName);
@@ -117,7 +118,7 @@ function addChart(id, chart, type, target = '', width = '') {
 	$('<p class="text-center text-muted"><i class="fas fa-spinner fa-2x fa-spin loading"></i></p>').appendTo(cardBody);
 
 	// domain button
-	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-edit" data-id="' + id + '"><i class="fas fa-filter"></i></a>').on("click", function () {
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-edit" title="Filter" data-id="' + id + '"><i class="fas fa-filter"></i></a>').on('click', function () {
 		$(cardTitle).removeClass('col-9').addClass('col-6');
 		$(cardToolbar).removeClass('col-3').addClass('col-6');
 		$('#chart-' + $(this).data('id')).find('.btn-card-edit').prop('hidden', true);
@@ -126,8 +127,46 @@ function addChart(id, chart, type, target = '', width = '') {
 		$('#chart-' + $(this).data('id')).find('.chart-edit').prop('hidden', false);
 		$('#chart-' + $(this).data('id')).find('.chart-input').focus();
 	}).prependTo(cardToolbar);
+	// export button
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2" title="Export to CSV"><i class="fa fa-file-download"></i></button>').on('click', function () {
+		var data = chartListData[id];
+		if (data) {
+			let csvExport = 'data:text/csv;charset=utf-8,';
+			csvExport += '"' + data.label + ' - ' + data.group + ' (' + chartRange.start + ' - ' + chartRange.stop + ')' + '"' + "\n";
+			var labels = '';
+			var rows = [];
+			data.datasets.map((set, index) => {
+				if (chart == 'line')
+					labels += (index == 0 ? ',' : '') + '"' + set.label + '"' + ',';
+				else
+					labels += '"' + set.label + '"' + ',' + 'hits' + ',';
+				set.data.map((hit, row) => {
+					if (chart == 'line') {
+						if (typeof rows[row] == 'undefined')
+							rows[row] = { t: 0, y: '' };
+						var day = moment(hit.t);
+						rows[row] = { t: day.format('MMM D, YYYY, hh:mm:SS A'), y: rows[row].y + hit.y + ',' };
+					} else {
+						if (typeof rows[row] == 'undefined')
+							rows[row] = '';
+						rows[row] += [data.labels[row], hit].join(',') + ',';
+					}
+				});
+			});
+			csvExport += labels.replace(/\,$/, '') + "\n";
+			csvExport += rows.map(row => {
+				val = '';
+				if (chart == 'line')
+					var val = '"' + row.t + '"' + ',' + row.y;
+				else
+					val = row;
+				return val.replace(/\,$/, '');
+			}).join("\n");
+			window.open(encodeURI(csvExport), '_blank');
+		}
+	}).prependTo(cardToolbar);
 	// expand button
-	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-expand"><i class="fa fa-expand"></button>').on('click', function () {
+	$('<button type="button" class="btn btn-link p-0 float-right text-secondary mr-2 btn-card-expand" title="Expand"><i class="fa fa-expand"></button>').on('click', function () {
 		$(chartElement).data('width', $(chartElement).data('width') == 'full' ? '' : 'full');
 		if ($(chartElement).data('width') == 'full')
 			$(chartElement).removeClass('col-lg-6').addClass('col-12');
@@ -182,6 +221,11 @@ function setChartData(id, chart, type, target, dataOnly = false) {
 
 		if (typeof this.chartList == 'undefined')
 			this.chartList = [];
+
+		if (typeof this.chartListData == 'undefined')
+			this.chartListData = [];
+
+		this.chartListData[id] = data;
 
 		if (chart === 'line') {
 			if (typeof this.chartList[id] == 'undefined')
