@@ -12,3 +12,5 @@ vendor/
 
 # PHPStorm settings
 .idea
+
+/session-transfer.php
