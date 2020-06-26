@@ -95,6 +95,8 @@ class Settings
   private $statsDefaultView = [];
   private $digestToAll = false;
   private $digestSecret = null;
+  private $digestReleaseLink = false;
+  private $digestPreviewLink = false;
   private $mailSender = null;
 
   /**
@@ -176,6 +178,8 @@ class Settings
 
     $this->extract($this->digestToAll, 'digest.to-all');
     $this->extract($this->digestSecret, 'digest.secret');
+    $this->extract($this->digestReleaseLink, 'digest.release-link');
+    $this->extract($this->digestPreviewLink, 'digest.preview-link');
     $this->extract($this->mailSender, 'mail.from');
   }
 
@@ -463,12 +467,27 @@ class Settings
   }
 
   /**
-   * Returns the secret key used to generate a "direct release" link in
-   * digest emails.
+   * Returns the secret key used to generate links in digest emails.
    */
   public function getDigestSecret()
   {
     return $this->digestSecret;
+  }
+
+  /**
+   * Returns if the digest emails should include a release link or not.
+   */
+  public function getDigestReleaseLink()
+  {
+    return $this->digestReleaseLink;
+  }
+
+  /**
+   * Returns if the digest emails should include a preview link or not.
+   */
+  public function getDigestPreviewLink()
+  {
+    return $this->digestPreviewLink;
   }
 
   /**

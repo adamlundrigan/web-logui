@@ -193,9 +193,12 @@
  * and it will use the authentication sources to find users. To use static
  * users (type account), add a 'email' to them. To send digest messages to
  * EVERY RECIPIENT (user or not) that has quarantine messages, enable the
- * to-all option below. To have a "direct release link" in the messages,
- * enable the digest secret below.
+ * to-all option below. To have a "direct release link" and a "preview link"
+ * in the messages, set a digest secret below and then enable the
+ * relevant digest link setting.
  */
 
 //$settings['digest']['to-all'] = true;
 //$settings['digest']['secret'] = 'badsecret';
+//$settings['digest']['release-link'] = false;
+//$settings['digest']['preview-link'] = false;

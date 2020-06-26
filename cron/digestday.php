@@ -136,8 +136,8 @@ foreach ($users as $email => $access) {
 				$time = time();
 				$message = $time.$m['data']->id->transaction.$m['data']->id->queue.$m['id'];
 				$hash = hash_hmac('sha256', $message, $settings->getDigestSecret());
-				$mail['release_url'] = $settings->getPublicURL().'/?page=digest&msgid='.$m['data']->id->transaction.'&msgactionid='.$m['data']->id->queue.'&time='.$time.'&node='.$m['id'].'&sign='.$hash;
-				$mail['preview_url'] = $settings->getPublicURL().'/?page=digest&msgid='.$m['data']->id->transaction.'&msgactionid='.$m['data']->id->queue.'&time='.$time.'&preview=true&node='.$m['id'].'&sign='.$hash;
+				if ($settings->getDigestReleaseLink()) $mail['release_url'] = $settings->getPublicURL().'/?page=digest&msgid='.$m['data']->id->transaction.'&msgactionid='.$m['data']->id->queue.'&time='.$time.'&node='.$m['id'].'&sign='.$hash;
+				if ($settings->getDigestPreviewLink()) $mail['preview_url'] = $settings->getPublicURL().'/?page=digest&msgid='.$m['data']->id->transaction.'&msgactionid='.$m['data']->id->queue.'&time='.$time.'&preview=true&node='.$m['id'].'&sign='.$hash;
 			}
 			$mail['time'] = date('Y-m-d H:i:s', $m['data']->ts);
 			$mail['from'] = isset($m['data']->sender) && $m['data']->sender->localpart && $m['data']->sender->domain ? strtolower($m['data']->sender->localpart."@".$m['data']->sender->domain) : '';
