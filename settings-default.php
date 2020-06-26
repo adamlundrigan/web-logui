@@ -134,6 +134,7 @@
  *    Use lower case letters when manually adding an access level.
  *  - Session transfer
  *    Rename session-transfer.php.txt to session-transfer.php
+ *  - web-apps-control-panel
  */
 
 //$settings['authentication'][] = array(
@@ -145,6 +146,12 @@
 //				'mail' => array('foo@example.com'),
 //				),
 // 		);
+//$settings['authentication'][] = array(
+//    'type' => 'control',
+//    'url' => 'https://127.0.0.1',
+//    'apikey' => 'secret',
+//    'tls' => array('verify_peer' => true, 'verify_peer_name' => true, 'allow_self_signed' => false)
+//    );
 
 /*
  * If hosting multiple websites on the same server, it's important to use

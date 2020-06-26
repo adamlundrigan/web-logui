@@ -75,6 +75,23 @@ foreach ($settings->getAuthSources() as $a) {
 	// Send to statically configured users with e-mail address
 	if ($a['type'] == 'account' && isset($a['email']))
 		$users[$a['email']] = access_level_merge($users[$a['email']], $a['access']);
+	// Users in web-apps-controlpanel
+	if ($a['type'] == 'control') {
+		$context = $stream_context = stream_context_create(['ssl' => $a['tls']]);
+		$result = $file = file_get_contents($a['url']."/api/".$a['apikey']."/users", false, $context);
+		if ($result) {
+			$list = json_decode($result, true);
+			foreach ($list as $user) {
+				$user_access = array_filter($user['relation'], function($item) {
+					return $item['access_type'] === 'user';
+				});
+				$addresses = array_map(function($item) {
+					return $item['access'];
+				}, $user_access);
+				$users[$user['username']."@".$user['domain']] = ['mail' => array_merge([$user['username']."@".$user['domain']], $addresses)];
+			}
+		}
+	}
 }
 
 // Send to everyone in quarantine, if enabled in settings
