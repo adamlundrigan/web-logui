@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Singleton wrapper for SP Enduser's settings (settings.php).
+ * Singleton wrapper for the settings file (settings.php).
  */
 class Settings
 {
