@@ -3,6 +3,7 @@
 // that the autoloader and settings are initialized properly
 require_once BASE.'/inc/core.php';
 require_once BASE.'/inc/utils/rest.inc.php';
+require_once BASE.'/inc/utils/mail.inc.php';
 
 function history_parse_scores($mail)
 {

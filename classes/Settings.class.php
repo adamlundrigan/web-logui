@@ -16,7 +16,6 @@ class Settings
   private $apiKey = null;
   private $authSources = array(array('type' => 'account'));
 
-  private $mailSender = null;
   private $publicURL = null;
 
   private $pageName = "Halon log server";
@@ -94,6 +93,9 @@ class Settings
   private $statsColor = [];
   private $statsLabelColor = [];
   private $statsDefaultView = [];
+  private $digestToAll = false;
+  private $digestSecret = null;
+  private $mailSender = null;
 
   /**
    * Returns a shared Settings instance.
@@ -120,7 +122,6 @@ class Settings
     $this->extract($this->nodeDefaultTimeout, 'node-default-timeout');
     $this->extract($this->dbCredentials, 'database');
     $this->extract($this->apiKey, 'api-key');
-    $this->extract($this->mailSender, 'mail.from');
     $this->extract($this->publicURL, 'public-url');
     $this->extract($this->theme, 'theme');
     $this->extract($this->brandLogo, 'brand-logo');
@@ -172,6 +173,10 @@ class Settings
       $url = $protocol."://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
       $this->publicURL = preg_replace("#[^/]*$#", "", $url);
     }
+
+    $this->extract($this->digestToAll, 'digest.to-all');
+    $this->extract($this->digestSecret, 'digest.secret');
+    $this->extract($this->mailSender, 'mail.from');
   }
 
   /**
@@ -447,5 +452,30 @@ class Settings
 
   public function getStatsDefaultView() {
     return $this->statsDefaultView;
+  }
+
+  /**
+   * Returns whether digest emails should be sent to everyone.
+   */
+  public function getDigestToAll()
+  {
+    return $this->digestToAll;
+  }
+
+  /**
+   * Returns the secret key used to generate a "direct release" link in
+   * digest emails.
+   */
+  public function getDigestSecret()
+  {
+    return $this->digestSecret;
+  }
+
+  /**
+   * Returns the value for the "From:" field in outgoing emails, if any.
+   */
+  public function getMailSender()
+  {
+    return $this->mailSender;
   }
 }

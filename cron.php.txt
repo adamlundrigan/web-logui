@@ -6,3 +6,4 @@ if (!isset($_SERVER['argc']))
 define('BASE', dirname(__FILE__));
 
 if ($argv[1] == 'pending') require_once BASE.'/cron/pending.actions.php';
+if ($argv[1] == 'digestday') require_once BASE.'/cron/digestday.php';

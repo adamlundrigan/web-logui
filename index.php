@@ -36,6 +36,9 @@ switch (@$_GET['page'])
   case 'download':
     require_once BASE.'/pages/download.php';
   break;
+  case 'digest':
+    require_once BASE.'/pages/digest.php';
+  break;
   default:
   case 'index':
     require_once BASE.'/pages/index.php';

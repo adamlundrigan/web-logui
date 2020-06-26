@@ -1,0 +1,21 @@
+<p>You have {{ mails|length }} messages(s) received {% if recipient %}to {{ recipient }} {% endif %}in your <a href="{{ quarantine_url }}">quarantine</a> during the last 24 hours.</p>
+<table style="border-collapse: collapse;" cellpadding="4">
+	<tr>
+		<th>Date</th>
+		<th>From</th>
+		{% if not recipient %}<th>To</th> {% endif %}
+		<th>Subject</th>
+		{% if mails[0]['release_url'] %}<th>&nbsp;</th>{% endif %}
+		{% if mails[0]['preview_url'] %}<th>&nbsp;</th>{% endif %}
+	</tr>
+	{% for mail in mails %}
+	<tr style="background-color: {cycle values="#eee,#fff"};">
+		<td>{{ mail.time }}</td>
+		<td>{{ mail.from|length > 30 ? mail.from|slice(0, 30) ~ '...' : mail.from  }}</td>
+		{% if not recipient %}<td>{{ mail.to|length > 30 ? mail.to|slice(0, 30) ~ '...' : mail.to  }}</td>{% endif %}
+		<td>{{ mail.subject|length > 30 ? mail.subject|slice(0, 30) ~ '...' : mail.subject  }}</td>
+		{% if mail.release_url %}<td><a href="{{ mail.release_url }}">Release</a></td>{% endif %}
+		{% if mail.preview_url %}<td><a href="{{ mail.preview_url }}">Preview</a></td>{% endif %}
+	</tr>
+	{% endfor %}
+</table>
