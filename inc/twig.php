@@ -8,7 +8,7 @@ use Symfony\Component\Translation\Translator;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 
-$loader = new FilesystemLoader('./templates/');
+$loader = new FilesystemLoader(BASE.'/templates/');
 $twig = new Environment($loader, ['cache' => '/tmp/twigcache/']);
 
 $translator = new Translator('en_US');
