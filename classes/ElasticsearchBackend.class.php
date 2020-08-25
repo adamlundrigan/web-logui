@@ -28,14 +28,6 @@ class ElasticsearchBackend extends Backend
   {
     $this->es = $es;
     $this->rotate = $this->es->getRotate();
-    if (!in_array($this->es->getIndex().strftime($this->rotate, time()), Session::Get()->getElasticsearchIndices())) {
-      try {
-        $params = [
-          'index' => [$this->es->getIndex().'*', $this->es->getTextlogIndex().'*']
-        ];
-        Session::Get()->setElasticsearchIndices(array_keys($this->es->client()->indices()->get($params)));
-      } catch (Exception $e) { die($e->getMessage()); }
-    }
   }
 
   public function isValid() { return $this->client() != null; }
@@ -72,7 +64,7 @@ class ElasticsearchBackend extends Backend
 
       // set up interval for indices
       $indices = $this->initIndices(
-        $this->es->getIndex(),
+        $this->es->getIndexPattern(),
         $this->es->getRotate(),
         $param['index_range']['start'],
         $param['index_range']['stop']
@@ -361,7 +353,7 @@ class ElasticsearchBackend extends Backend
       $f = 0;
 
       $indices = $this->initIndices(
-        $this->es->getIndex(),
+        $this->es->getIndexPattern(),
         $this->es->getRotate(),
         $param['start'],
         $param['stop']
@@ -541,8 +533,6 @@ class ElasticsearchBackend extends Backend
 
   public function validIndex($index)
   {
-    if (in_array($index, Session::Get()->getElasticsearchIndices()))
-      return true;
-    return false;
+    return preg_match($this->es->getIndexRegExp(), $index) === 1;
   }
 }

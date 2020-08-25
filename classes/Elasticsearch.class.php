@@ -8,6 +8,8 @@ class Elasticsearch
 
   private $hosts;
   private $index;
+  private $indexPattern;
+  private $indexRegExp;
   private $type;
   private $rotate;
   private $timefilter;
@@ -26,6 +28,8 @@ class Elasticsearch
 
   public function client() { return $this->_client; }
   public function getIndex() { return $this->index; }
+  public function getIndexPattern() { return $this->indexPattern; }
+  public function getIndexRegExp() { return $this->indexRegExp; }
   public function getType() { return $this->type; }
   public function getRotate() { return $this->rotate; }
   public function getTimefilter() { return $this->timefilter; }
@@ -41,6 +45,11 @@ class Elasticsearch
   {
     $this->hosts = $hosts;
     $this->index = $index['mail']['name'];
+    $this->indexPattern = $this->index . (($index['mail']['wildcard'] ?? false) ? '*-' : '');
+    $this->indexRegExp = ($index['mail']['wildcard'] ?? false)
+      ? '#^'.preg_quote($this->index, '#').'(?<subindex>.+)\-(?<rotate>[^-]+)$#'
+      : '#^'.preg_quote($this->index, '#').'(?<rotate>[^-]+)$#'
+    ;
     $this->type = $index['mail']['type'] ?? null;
     $this->rotate = $index['mail']['rotate'];
     $this->timefilter = $index['mail']['timefilter'];
