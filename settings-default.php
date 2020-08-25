@@ -56,6 +56,7 @@
 
 // $settings['elasticsearch']['host'][] = '127.0.0.1:9200';
 // $settings['elasticsearch']['index']['mail']['name'] = 'halon-';
+// $settings['elasticsearch']['index']['mail']['wildcard'] = false;
 // $settings['elasticsearch']['index']['mail']['rotate'] = '%Y-%m-%d';
 // $settings['elasticsearch']['index']['mail']['timefilter'] = 'receivedtime';
 
