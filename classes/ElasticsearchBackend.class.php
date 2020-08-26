@@ -62,17 +62,6 @@ class ElasticsearchBackend extends Backend
       $results = [];
       $settings = Settings::Get();
 
-      // set up interval for indices
-      $indices = $this->initIndices(
-        $this->es->getIndexPattern(),
-        $this->es->getRotate(),
-        $param['index_range']['start'],
-        $param['index_range']['stop']
-      );
-
-      if (count($indices) < 1)
-        return [];
-
       $schema = $settings->getElasticsearchMappings();
 
       // sort
@@ -237,7 +226,7 @@ class ElasticsearchBackend extends Backend
 
       // params
       $params = [
-        'index' => implode(',', $indices),
+        'index' => $this->es->getIndexPattern(),
         'from' => $param['offset'],
         'size' => $size + 1,
         'body' => $body->toArray()

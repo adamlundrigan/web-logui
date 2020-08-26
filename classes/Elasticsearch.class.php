@@ -49,7 +49,7 @@ class Elasticsearch
   {
     $this->hosts = $hosts;
     $this->index = $index['mail']['name'];
-    $this->indexPattern = $this->index . (($index['mail']['wildcard'] ?? false) ? '*-' : '');
+    $this->indexPattern = $this->index . (($index['mail']['wildcard'] ?? false) ? '*-' : '*');
     $this->indexRegExp = ($index['mail']['wildcard'] ?? false)
       ? '#^'.preg_quote($this->index, '#').'(?<subindex>.+)\-(?<rotate>[^-]+)$#'
       : '#^'.preg_quote($this->index, '#').'(?<rotate>[^-]+)$#'
