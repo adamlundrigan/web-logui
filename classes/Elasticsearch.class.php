@@ -49,7 +49,7 @@ class Elasticsearch
   {
     $this->hosts = $hosts;
     $this->index = $index['mail']['name'];
-    $this->indexPattern = $this->index . (($index['mail']['wildcard'] ?? false) ? '*-' : '*');
+    $this->indexPattern = $this->index . (($index['mail']['wildcard'] ?? false) ? '*-' : '') . '*';
     $this->indexRegExp = ($index['mail']['wildcard'] ?? false)
       ? '#^'.preg_quote($this->index, '#').'(?<subindex>.+)\-(?<rotate>[^-]+)$#'
       : '#^'.preg_quote($this->index, '#').'(?<rotate>[^-]+)$#'
@@ -59,7 +59,7 @@ class Elasticsearch
     $this->timefilter = $index['mail']['timefilter'];
 
     $this->textlog_index = $index['textlog']['name'];
-    $this->textlog_indexPattern = $this->textlog_index . (($index['textlog']['wildcard'] ?? false) ? '*-' : '*');
+    $this->textlog_indexPattern = $this->textlog_index . (($index['textlog']['wildcard'] ?? false) ? '*-' : '') . '*';
     $this->textlog_indexRegExp = ($index['textlog']['wildcard'] ?? false)
       ? '#^'.preg_quote($this->textlog_index, '#').'(?<subindex>.+)\-(?<rotate>[^-]+)$#'
       : '#^'.preg_quote($this->textlog_index, '#').'(?<rotate>[^-]+)$#'
