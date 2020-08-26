@@ -15,6 +15,8 @@ class Elasticsearch
   private $timefilter;
 
   private $textlog_index;
+  private $textlog_indexPattern;
+  private $textlog_indexRegExp;
   private $textlog_rotate;
   private $textlog_type;
   private $textlog_timefilter;
@@ -35,6 +37,8 @@ class Elasticsearch
   public function getTimefilter() { return $this->timefilter; }
 
   public function getTextlogIndex() { return $this->textlog_index; }
+  public function getTextlogIndexPattern() { return $this->textlog_indexPattern; }
+  public function getTextlogIndexRegExp() { return $this->textlog_indexRegExp; }
   public function getTextlogRotate() { return $this->textlog_rotate; }
   public function getTextlogType() { return $this->textlog_type; }
   public function getTextlogTimefilter() { return $this->textlog_timefilter; }
@@ -55,6 +59,11 @@ class Elasticsearch
     $this->timefilter = $index['mail']['timefilter'];
 
     $this->textlog_index = $index['textlog']['name'];
+    $this->textlog_indexPattern = $this->textlog_index . (($index['textlog']['wildcard'] ?? false) ? '*-' : '*');
+    $this->textlog_indexRegExp = ($index['textlog']['wildcard'] ?? false)
+      ? '#^'.preg_quote($this->textlog_index, '#').'(?<subindex>.+)\-(?<rotate>[^-]+)$#'
+      : '#^'.preg_quote($this->textlog_index, '#').'(?<rotate>[^-]+)$#'
+    ;
     $this->textlog_rotate = $index['textlog']['rotate'];
     $this->textlog_type = $index['textlog']['type'];
     $this->textlog_timefilter = $index['textlog']['timefilter'];

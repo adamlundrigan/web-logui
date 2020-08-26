@@ -299,21 +299,6 @@ class ElasticsearchBackend extends Backend
     $page = $page > 0 && $page < 100 ? $page : 1;
 
     try {
-      // set up indices
-      $indices = $this->initIndices(
-        $this->es->getTextlogIndex(),
-        $this->es->getTextlogRotate(),
-        $msgts0,
-        time(),
-        true
-      );
-
-      if (count($indices) < 1)
-        return [];
-
-      if (count($indices) > $this->es->getTextlogRotateLimit())
-        $indices = array_slice($indices, 0, $this->es->getTextlogRotateLimit());
-
       // sort
       $sort = new FieldSort($this->es->getTextlogTimefilter(), FieldSort::ASC);
 
@@ -326,7 +311,7 @@ class ElasticsearchBackend extends Backend
       $body->addSort($sort);
 
       $params = [
-        'index' => implode(',', $indices),
+        'index' => $this->es->getTextLogIndexPattern(),
         'type' => $this->es->getTextlogType(),
         'size' => ($this->es->getTextlogLimit() * $page) + 1,
         'body' => $body->toArray()
@@ -533,6 +518,8 @@ class ElasticsearchBackend extends Backend
 
   public function validIndex($index)
   {
-    return preg_match($this->es->getIndexRegExp(), $index) === 1;
+    return preg_match($this->es->getIndexRegExp(), $index) === 1
+      || preg_match($this->es->getTextlogIndexRegExp(), $index) === 1
+    ;
   }
 }
